@@ -1,0 +1,17 @@
+{
+    "estilos": [
+        "Style: Padrão",
+        "Style"
+    ],
+    "dirLegendaAntiga": "/Legendas Originais",
+    "extensaoDasLegendas": ".ass",
+    "arquivoModeloDeCabecalho": "/home/fagner/ProjetosVSCode/RenameAnimes/modeloCabecalhosLegenda.txt",
+    "parametroDeSeparacaoDoCabecalho": "[V4+ Styles]",
+    "substituicoes": {
+        "Trebuchet MS,22": "firasanscompressed-book,24",
+        "Trebuchet MS": "firasanscompressed-book",
+        "Arial": "FiraSans-Regular",
+        "Verdana": "FiraSans-SemiBold",
+        "Times New Roman": "RobotoSlab-Regular"
+    }
+}
