@@ -1,45 +1,137 @@
-
-[
-  {
-    "Name": "Default",
-    "Fontname": "FiraSans-Regular",
-    "Fontsize": 22,
-    "Bold": -1,
-    "Italic": 0,
-    "Underline": 0,
-    "StrikeOut": 0,
-    "ScaleX": 100,
-    "ScaleY": 100,
-    "Spacing": 0,
-    "Angle": 0,
-    "BorderStyle": 1,
-    "Outline": 2,
-    "Shadow": 1,
-    "Alignment": 2,
-    "MarginL": 40,
-    "MarginR": 40,
-    "MarginV": 15,
-    "Encoding": 0
+{
+  "Default": {
+      "fontname": "FiraSans-Regular",
+      "fontsize": 22,
+      "backcolor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outlinecolor": [
+        25,
+        25,
+        25,
+        0
+      ],
+      "secondarycolor": [
+        0,
+        0,
+        255,
+        0
+      ],
+      "primarycolor": [
+        255,
+        255,
+        255,
+        0
+      ],
+      "bold": -1,
+      "italic": 0,
+      "underline": 0,
+      "strikeout": 0,
+      "scalex": 100,
+      "scaley": 100,
+      "spacing": 0,
+      "angle": 0,
+      "borderstyle": 1,
+      "outline": 2,
+      "shadow": 1,
+      "alignment": 2,
+      "marginl": 40,
+      "marginr": 40,
+      "marginv": 15,
+      "encoding": 0
   },
-  {
-    "Name": "Italics",
-    "Fontname": "FiraSans-Regular",
-    "Fontsize": 22,
-    "Bold": -1,
-    "Italic": -1,
-    "Underline": 0,
-    "StrikeOut": 0,
-    "ScaleX": 100,
-    "ScaleY": 100,
-    "Spacing": 0,
-    "Angle": 0,
-    "BorderStyle": 1,
-    "Outline": 2,
-    "Shadow": 1,
-    "Alignment": 2,
-    "MarginL": 40,
-    "MarginR": 40,
-    "MarginV": 15,
-    "Encoding": 0
-  }
-]
+  "Italics": {
+      "fontname": "FiraSans-Regular",
+      "fontsize": 22,
+      "backcolor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outlinecolor": [
+        25,
+        25,
+        25,
+        0
+      ],
+      "secondarycolor": [
+        0,
+        0,
+        255,
+        0
+      ],
+      "primarycolor": [
+        255,
+        255,
+        255,
+        0
+      ],
+      "bold": -1,
+      "italic": 0,
+      "underline": 0,
+      "strikeout": 0,
+      "scalex": 100,
+      "scaley": 100,
+      "spacing": 0,
+      "angle": 0,
+      "borderstyle": 1,
+      "outline": 2,
+      "shadow": 1,
+      "alignment": 2,
+      "marginl": 40,
+      "marginr": 40,
+      "marginv": 15,
+      "encoding": 0
+  },
+  "Main": {
+      "fontname": "FiraSans-Regular",
+      "fontsize": 22,
+      "backcolor": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "outlinecolor": [
+        25,
+        25,
+        25,
+        0
+      ],
+      "secondarycolor": [
+        0,
+        0,
+        255,
+        0
+      ],
+      "primarycolor": [
+        255,
+        255,
+        255,
+        0
+      ],
+      "bold": -1,
+      "italic": 0,
+      "underline": 0,
+      "strikeout": 0,
+      "scalex": 100,
+      "scaley": 100,
+      "spacing": 0,
+      "angle": 0,
+      "borderstyle": 1,
+      "outline": 2,
+      "shadow": 1,
+      "alignment": 2,
+      "marginl": 40,
+      "marginr": 40,
+      "marginv": 15,
+      "encoding": 0
+    },
+  "NaoAchou": {
+      "fontname": "FiraSans-Regular"
+    }
+}
