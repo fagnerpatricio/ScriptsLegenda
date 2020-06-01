@@ -9,6 +9,7 @@ import pysubs2 as pysubs2
 import requests
 
 CONFIG: object = json.load(open('config.json', 'r'))
+CONFIG_ESTILOS_LEGENDAS: object = json.load(open('estilos.json', 'r'))
 
 
 def baixa_tvmaze_legendas(codigo=None):
@@ -65,9 +66,71 @@ def corrigi_estilos_subs(temp_arq_de_legenda, temp_dir_salvar, temp_nome_salvar)
             estilo.fontname = CONFIG["fontesEstilos"][nome_estilo]
         except:
             estilo.fontname = CONFIG["fontePadrao"]
-        # for config_estilo in novas_fontes_estilos:
-        #     if nome_estilo == config_estilo:
-        #         estilo.fontname = CONFIG["fontesEstilos"][config_estilo]
+
+    subs.save(temp_dir_salvar + '/' + temp_nome_salvar)
+
+
+def corrigi_estilos_subs2(temp_arq_de_legenda, temp_dir_salvar, temp_nome_salvar):
+    subs = pysubs2.load(temp_arq_de_legenda, encoding="utf-8")
+
+    subs.info = {"Title": "[Legendas-Otaku] Português (Brasil)", "PlayResX": 640, "PlayResY": 360,
+                 "ScriptType": "v4.00+", "WrapStyle": "0"}
+
+    subs.aegisub_project = {}
+
+    novas_fontes_estilos = CONFIG["fontesEstilos"]
+
+    for nome_estilo, estilo in zip(subs.styles.keys(), subs.styles.values()):
+        try:
+            if nome_estilo == "Default":
+                estilo.alignment = CONFIG_ESTILOS_LEGENDAS[0]["Alignment"]
+                estilo.angle = CONFIG_ESTILOS_LEGENDAS[0]["Angle"]
+                estilo.backcolor = pysubs2.Color(0, 0, 0, 0)
+                estilo.bold = CONFIG_ESTILOS_LEGENDAS[0]["Bold"]
+                estilo.borderstyle = CONFIG_ESTILOS_LEGENDAS[0]["BorderStyle"]
+                estilo.encoding = CONFIG_ESTILOS_LEGENDAS[0]["Encoding"]
+                estilo.fontname = CONFIG_ESTILOS_LEGENDAS[0]["Fontname"]
+                estilo.fontsize = CONFIG_ESTILOS_LEGENDAS[0]["Fontsize"]
+                estilo.italic = CONFIG_ESTILOS_LEGENDAS[0]["Italic"]
+                estilo.marginl = CONFIG_ESTILOS_LEGENDAS[0]["MarginL"]
+                estilo.marginr = CONFIG_ESTILOS_LEGENDAS[0]["MarginR"]
+                estilo.marginv = CONFIG_ESTILOS_LEGENDAS[0]["MarginV"]
+                estilo.outline = CONFIG_ESTILOS_LEGENDAS[0]["Outline"]
+                estilo.outlinecolor = pysubs2.Color(25, 25, 25, 0)
+                estilo.primarycolor = pysubs2.Color(255, 255, 255, 0)
+                estilo.scalex = CONFIG_ESTILOS_LEGENDAS[0]["ScaleX"]
+                estilo.scaley = CONFIG_ESTILOS_LEGENDAS[0]["ScaleY"]
+                estilo.secondarycolor = pysubs2.Color(0, 0, 255, 0)
+                estilo.shadow = CONFIG_ESTILOS_LEGENDAS[0]["Shadow"]
+                estilo.spacing = CONFIG_ESTILOS_LEGENDAS[0]["Spacing"]
+                estilo.strikeout = CONFIG_ESTILOS_LEGENDAS[0]["StrikeOut"]
+                estilo.underline = CONFIG_ESTILOS_LEGENDAS[0]["Underline"]
+            if nome_estilo == "Italics":
+                estilo.alignment = CONFIG_ESTILOS_LEGENDAS[1]["Alignment"]
+                estilo.angle = CONFIG_ESTILOS_LEGENDAS[1]["Angle"]
+                estilo.backcolor = pysubs2.Color(0, 0, 0, 0)
+                estilo.bold = CONFIG_ESTILOS_LEGENDAS[1]["Bold"]
+                estilo.borderstyle = CONFIG_ESTILOS_LEGENDAS[1]["BorderStyle"]
+                estilo.encoding = CONFIG_ESTILOS_LEGENDAS[1]["Encoding"]
+                estilo.fontname = CONFIG_ESTILOS_LEGENDAS[1]["Fontname"]
+                estilo.fontsize = CONFIG_ESTILOS_LEGENDAS[0]["Fontsize"]
+                estilo.italic = CONFIG_ESTILOS_LEGENDAS[1]["Italic"]
+                estilo.marginl = CONFIG_ESTILOS_LEGENDAS[1]["MarginL"]
+                estilo.marginr = CONFIG_ESTILOS_LEGENDAS[1]["MarginR"]
+                estilo.marginv = CONFIG_ESTILOS_LEGENDAS[1]["MarginV"]
+                estilo.outline = CONFIG_ESTILOS_LEGENDAS[1]["Outline"]
+                estilo.outlinecolor = pysubs2.Color(25, 25, 25, 0)
+                estilo.primarycolor = pysubs2.Color(255, 255, 255, 0)
+                estilo.scalex = CONFIG_ESTILOS_LEGENDAS[1]["ScaleX"]
+                estilo.scaley = CONFIG_ESTILOS_LEGENDAS[1]["ScaleY"]
+                estilo.secondarycolor = pysubs2.Color(0, 0, 255, 0)
+                estilo.shadow = CONFIG_ESTILOS_LEGENDAS[1]["Shadow"]
+                estilo.spacing = CONFIG_ESTILOS_LEGENDAS[1]["Spacing"]
+                estilo.strikeout = CONFIG_ESTILOS_LEGENDAS[1]["StrikeOut"]
+                estilo.underline = CONFIG_ESTILOS_LEGENDAS[1]["Underline"]
+        except:
+            estilo.fontname = CONFIG_ESTILOS_LEGENDAS[0]["Fontname"]
+            continue
 
     subs.save(temp_dir_salvar + '/' + temp_nome_salvar)
 
@@ -86,8 +149,8 @@ def resize_subs(temp_arq_de_legenda, scale=None, res_x_dest=640):
     subs = pysubs2.load(temp_arq_de_legenda, encoding="utf-8")
 
     # metadata
-    # subs.info["PlayResX"] = str(res_x_dest)
-    # subs.info["PlayResY"] = str(res_y_dest)
+    subs.info["PlayResX"] = str(res_x_dest)
+    subs.info["PlayResY"] = str(res_y_dest)
 
     # styles
     for style in subs.styles.values():
@@ -141,7 +204,8 @@ if sys.argv[1] == '-tvmaze':
 
     for arquivo_de_legenda in diretorio_com_legendas:
         if arquivo_de_legenda.endswith(".ass"):
-            escala = res_y_and_scale(dir_trabalho + CONFIG["dirLegendaAntiga"] + '/' + arquivo_de_legenda, res_x_dest=640)
+            escala = res_y_and_scale(dir_trabalho + CONFIG["dirLegendaAntiga"] + '/' + arquivo_de_legenda,
+                                     res_x_dest=640)
             corrigi_estilos_subs(dir_trabalho + CONFIG["dirLegendaAntiga"] + '/' + arquivo_de_legenda, dir_trabalho,
                                  arquivo_de_legenda)
 
@@ -153,12 +217,11 @@ if sys.argv[1] == '-tvmaze':
             temp_cabecalho = arquivo_de_cabecalho.read().splitlines(True)
 
             temp_nome_nova_legenda = dir_trabalho + '/' + arquivo_de_legenda.replace(".ptBR", '')
-            arquivoDeNovaLegenda = open(temp_nome_nova_legenda, "w")
-            arquivoDeNovaLegenda.writelines(temp_cabecalho + ['\n'] + temp_legenda)
+            # arquivoDeNovaLegenda = open(temp_nome_nova_legenda, "w+")
+            # arquivoDeNovaLegenda.writelines(temp_cabecalho + ['\n'] + temp_legenda)
 
             resize_subs(temp_nome_nova_legenda, escala)
             resize_subs2(temp_nome_nova_legenda, escala)
-
 
     # LerAquivos
     dir_episodios = listar_arquivos(dir_trabalho, "mkv")
@@ -189,3 +252,12 @@ if sys.argv[1] == '-tvmaze':
         os.rename(dir_trabalho + '/' + temp_nome_legenda, dir_trabalho + '/' + novo_nome_episodio.rstrip() + '.ass')
         os.rename(dir_trabalho + '/' + temp_nome_episodio, dir_trabalho + '/' + novo_nome_episodio.rstrip() + '.mkv')
 
+# Apenas Corigir Legendas
+if sys.argv[1] == '-cl':
+    # sys.argv[2] possui o diretório com os animes e legendas
+    dir_trabalho = sys.argv[2]
+    arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+
+    for arquivo_de_legenda in arquivos_no_diretorio_de_trabalho:
+        if arquivo_de_legenda.endswith(".ass"):
+            corrigi_estilos_subs2(dir_trabalho + '/' + arquivo_de_legenda, dir_trabalho, arquivo_de_legenda)

@@ -1,0 +1,45 @@
+
+[
+  {
+    "Name": "Default",
+    "Fontname": "FiraSans-Regular",
+    "Fontsize": 22,
+    "Bold": -1,
+    "Italic": 0,
+    "Underline": 0,
+    "StrikeOut": 0,
+    "ScaleX": 100,
+    "ScaleY": 100,
+    "Spacing": 0,
+    "Angle": 0,
+    "BorderStyle": 1,
+    "Outline": 2,
+    "Shadow": 1,
+    "Alignment": 2,
+    "MarginL": 40,
+    "MarginR": 40,
+    "MarginV": 15,
+    "Encoding": 0
+  },
+  {
+    "Name": "Italics",
+    "Fontname": "FiraSans-Regular",
+    "Fontsize": 22,
+    "Bold": -1,
+    "Italic": -1,
+    "Underline": 0,
+    "StrikeOut": 0,
+    "ScaleX": 100,
+    "ScaleY": 100,
+    "Spacing": 0,
+    "Angle": 0,
+    "BorderStyle": 1,
+    "Outline": 2,
+    "Shadow": 1,
+    "Alignment": 2,
+    "MarginL": 40,
+    "MarginR": 40,
+    "MarginV": 15,
+    "Encoding": 0
+  }
+]

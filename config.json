@@ -8,9 +8,9 @@
     "arquivoModeloDeCabecalho": "/home/fagner/ProjetosVSCode/RenameAnimes/modeloCabecalhosLegenda.txt",
     "parametroDeSeparacaoDoCabecalho": "[V4+ Styles]",
     "fontesEstilos": {
-        "Default": "firasanscompressed-book",
-        "Italics": "Fira Code",
+        "Default": "FiraSans-Regular",
+        "Italics": "FiraSans-Regular",
         "Signs": "FiraSans-Regular"
     },
-    "fontePadrao": "Inconsolata"
+    "fontePadrao": "FiraSans-Regular"
 }
