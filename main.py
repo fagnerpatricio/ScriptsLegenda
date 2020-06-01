@@ -41,7 +41,6 @@ def listar_arquivos(directory, extension):
     lista_de_nomes = []
     for f in os.listdir(directory):
         if f.endswith('.' + extension):
-            print(f)
             lista_de_nomes.append(f)
     return lista_de_nomes
 
@@ -92,90 +91,6 @@ def corrigi_estilos_subs2(subs, temp_dir_salvar, temp_nome_salvar):
             except:
                 estilo.fontname = CONFIG_ESTILOS_LEGENDAS["NaoAchou"]["fontname"]
                 continue
-        # try:
-        #     vars(estilo)["alignment"] = 10000
-        #     keys = frozenset(estilo.FIELDS)
-        #     if CONFIG_ESTILOS_LEGENDAS[nome_estilo]:
-        #         estilo.alignment = altera_elementos(CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Alignment"],estilo.alignment)
-        #         estilo.angle = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Angle"]
-        #         estilo.backcolor = pysubs2.Color(0, 0, 0, 0)
-        #         estilo.bold = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Bold"]
-        #         estilo.borderstyle = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["BorderStyle"]
-        #         estilo.encoding = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Encoding"]
-        #         estilo.fontname = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Fontname"]
-        #         estilo.fontsize = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Fontsize"]
-        #         estilo.italic = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Italic"]
-        #         estilo.marginl = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["MarginL"]
-        #         estilo.marginr = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["MarginR"]
-        #         estilo.marginv = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["MarginV"]
-        #         estilo.outline = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Outline"]
-        #         estilo.outlinecolor = pysubs2.Color(25, 25, 25, 0)
-        #         estilo.primarycolor = pysubs2.Color(255, 255, 255, 0)
-        #         estilo.scalex = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["ScaleX"]
-        #         estilo.scaley = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["ScaleY"]
-        #         estilo.secondarycolor = pysubs2.Color(0, 0, 255, 0)
-        #         estilo.shadow = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Shadow"]
-        #         estilo.spacing = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Spacing"]
-        #         estilo.strikeout = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["StrikeOut"]
-        #         estilo.underline = CONFIG_ESTILOS_LEGENDAS[nome_estilo]["Underline"]
-        # except:
-        #     continue
-
-        # try:
-        #     if nome_estilo == "Default":
-        #         estilo.alignment = CONFIG_ESTILOS_LEGENDAS[0]["Alignment"]
-        #         estilo.angle = CONFIG_ESTILOS_LEGENDAS[0]["Angle"]
-        #         estilo.backcolor = pysubs2.Color(0, 0, 0, 0)
-        #         estilo.bold = CONFIG_ESTILOS_LEGENDAS[0]["Bold"]
-        #         estilo.borderstyle = CONFIG_ESTILOS_LEGENDAS[0]["BorderStyle"]
-        #         estilo.encoding = CONFIG_ESTILOS_LEGENDAS[0]["Encoding"]
-        #         estilo.fontname = CONFIG_ESTILOS_LEGENDAS[0]["Fontname"]
-        #         estilo.fontsize = CONFIG_ESTILOS_LEGENDAS[0]["Fontsize"]
-        #         estilo.italic = CONFIG_ESTILOS_LEGENDAS[0]["Italic"]
-        #         estilo.marginl = CONFIG_ESTILOS_LEGENDAS[0]["MarginL"]
-        #         estilo.marginr = CONFIG_ESTILOS_LEGENDAS[0]["MarginR"]
-        #         estilo.marginv = CONFIG_ESTILOS_LEGENDAS[0]["MarginV"]
-        #         estilo.outline = CONFIG_ESTILOS_LEGENDAS[0]["Outline"]
-        #         estilo.outlinecolor = pysubs2.Color(25, 25, 25, 0)
-        #         estilo.primarycolor = pysubs2.Color(255, 255, 255, 0)
-        #         estilo.scalex = CONFIG_ESTILOS_LEGENDAS[0]["ScaleX"]
-        #         estilo.scaley = CONFIG_ESTILOS_LEGENDAS[0]["ScaleY"]
-        #         estilo.secondarycolor = pysubs2.Color(0, 0, 255, 0)
-        #         estilo.shadow = CONFIG_ESTILOS_LEGENDAS[0]["Shadow"]
-        #         estilo.spacing = CONFIG_ESTILOS_LEGENDAS[0]["Spacing"]
-        #         estilo.strikeout = CONFIG_ESTILOS_LEGENDAS[0]["StrikeOut"]
-        #         estilo.underline = CONFIG_ESTILOS_LEGENDAS[0]["Underline"]
-        #     elif nome_estilo == "Italics":
-        #         estilo.alignment = CONFIG_ESTILOS_LEGENDAS[1]["Alignment"]
-        #         estilo.angle = CONFIG_ESTILOS_LEGENDAS[1]["Angle"]
-        #         estilo.backcolor = pysubs2.Color(0, 0, 0, 0)
-        #         estilo.bold = CONFIG_ESTILOS_LEGENDAS[1]["Bold"]
-        #         estilo.borderstyle = CONFIG_ESTILOS_LEGENDAS[1]["BorderStyle"]
-        #         estilo.encoding = CONFIG_ESTILOS_LEGENDAS[1]["Encoding"]
-        #         estilo.fontname = CONFIG_ESTILOS_LEGENDAS[1]["Fontname"]
-        #         estilo.fontsize = CONFIG_ESTILOS_LEGENDAS[0]["Fontsize"]
-        #         estilo.italic = CONFIG_ESTILOS_LEGENDAS[1]["Italic"]
-        #         estilo.marginl = CONFIG_ESTILOS_LEGENDAS[1]["MarginL"]
-        #         estilo.marginr = CONFIG_ESTILOS_LEGENDAS[1]["MarginR"]
-        #         estilo.marginv = CONFIG_ESTILOS_LEGENDAS[1]["MarginV"]
-        #         estilo.outline = CONFIG_ESTILOS_LEGENDAS[1]["Outline"]
-        #         estilo.outlinecolor = pysubs2.Color(25, 25, 25, 0)
-        #         estilo.primarycolor = pysubs2.Color(255, 255, 255, 0)
-        #         estilo.scalex = CONFIG_ESTILOS_LEGENDAS[1]["ScaleX"]
-        #         estilo.scaley = CONFIG_ESTILOS_LEGENDAS[1]["ScaleY"]
-        #         estilo.secondarycolor = pysubs2.Color(0, 0, 255, 0)
-        #         estilo.shadow = CONFIG_ESTILOS_LEGENDAS[1]["Shadow"]
-        #         estilo.spacing = CONFIG_ESTILOS_LEGENDAS[1]["Spacing"]
-        #         estilo.strikeout = CONFIG_ESTILOS_LEGENDAS[1]["StrikeOut"]
-        #         estilo.underline = CONFIG_ESTILOS_LEGENDAS[1]["Underline"]
-        #     else:
-        #         estilo.fontname = CONFIG_ESTILOS_LEGENDAS[0]["Fontname"]
-        # except:
-        #     estilo.fontname = CONFIG_ESTILOS_LEGENDAS[0]["Fontname"]
-        #     continue
-
-    # subs.save(temp_dir_salvar + '/' + temp_nome_salvar)
-
 
 def res_y_and_scale(subs, res_x_dest=640):
     res_x_src = int(subs.info["PlayResX"])
@@ -266,40 +181,108 @@ if sys.argv[1] == '-tvmaze':
     lista_de_nomes_de_episodios = natsort.natsorted(lista_de_nomes_de_episodios, reverse=False)
     lista_de_nomes_de_ovas = natsort.natsorted(lista_de_nomes_de_ovas, reverse=False)
 
-    for novo_nome_episodio, temp_nome_legenda, temp_nome_episodio in zip(lista_de_nomes_de_episodios, dir_legendas,
-                                                                         dir_episodios):
+    for novo_nome_episodio, temp_nome_legenda, temp_nome_episodio in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
         exibir_previa(novo_nome_episodio.rstrip(), temp_nome_legenda, temp_nome_episodio)
         input('Aperte \'Enter\' para contirnuar:')
         # Renomeando os arquivos
         os.rename(dir_trabalho + '/' + temp_nome_legenda, dir_trabalho + '/' + novo_nome_episodio.rstrip() + '.ass')
         os.rename(dir_trabalho + '/' + temp_nome_episodio, dir_trabalho + '/' + novo_nome_episodio.rstrip() + '.mkv')
 
-# Apenas Corigir Legendas
-if sys.argv[1] == '-cl':
-    # sys.argv[2] possui o diretório com os animes e legendas
+if sys.argv[1] == '-ln':
     dir_trabalho = sys.argv[2]
+    lista_de_nomes_de_episodios = open(sys.argv[3], "r").readlines()
+
     arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+    criar_diretorio_de_backup_legendas(dir_trabalho, arquivos_no_diretorio_de_trabalho)
 
-    for arquivo_de_legenda in arquivos_no_diretorio_de_trabalho:
+    diretorio_com_legendas = os.listdir(dir_trabalho + CONFIG["dirLegendaAntiga"])
+
+    for arquivo_de_legenda in diretorio_com_legendas:
         if arquivo_de_legenda.endswith(".ass"):
-            corrigi_estilos_subs2(dir_trabalho + '/' + arquivo_de_legenda, dir_trabalho, arquivo_de_legenda)
+            subs = pysubs2.load(dir_trabalho + CONFIG["dirLegendaAntiga"] + '/' + arquivo_de_legenda, encoding="utf-8")
+            escala = res_y_and_scale(subs, res_x_dest=640)
+            # temp_nome_nova_legenda = dir_trabalho + CONFIG["dirLegendaAntiga"] + '/' + arquivo_de_legenda.replace(".ptBR", '')
+            resize_subs(subs, escala)
+            resize_subs2(subs, escala)
+            corrigi_estilos_subs2(subs, dir_trabalho, arquivo_de_legenda)
+            subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
-# Corrigi Legendas e Renomeia Arquivos
-if sys.argv[1] == '-clra':
-    resolucao_x_destino = int(sys.argv[2])
-    dir_trabalho = sys.argv[3]
-    arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+    # LerAquivos
+    dir_episodios = listar_arquivos(dir_trabalho, "mkv")
+    dir_legendas = listar_arquivos(dir_trabalho, "ass")
 
-    dir_dest = dir_trabalho + '/' + 'Novas'
-    x = 0
+    # Ordena Nomes
+    dir_episodios = natsort.natsorted(dir_episodios, reverse=False)
+    dir_legendas = natsort.natsorted(dir_legendas, reverse=False)
 
-    for arquivo_de_legenda in arquivos_no_diretorio_de_trabalho:
-        if arquivo_de_legenda.endswith(".ass"):
-            caminho_da_legenda = dir_trabalho + '/' + arquivo_de_legenda
-            escala = res_y_and_scale(caminho_da_legenda, resolucao_x_destino)
-            resize_subs(caminho_da_legenda, escala, resolucao_x_destino)
-            resize_subs2(caminho_da_legenda, escala, resolucao_x_destino)
-            corrigi_estilos_subs2(caminho_da_legenda, dir_dest, "NovaLegenda" + str(x) + ".ass")
-            x += 1
+    lista_de_nomes_de_episodios = natsort.natsorted(lista_de_nomes_de_episodios, reverse=False)
+
+    for novo_nome_episodio, temp_nome_legenda, temp_nome_episodio in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
+        exibir_previa(novo_nome_episodio.rstrip(), temp_nome_legenda, temp_nome_episodio)
+        input('Aperte \'Enter\' para contirnuar:')
+        # Renomeando os arquivos
+        os.rename(dir_trabalho + '/' + temp_nome_legenda, dir_trabalho + '/' + novo_nome_episodio.rstrip() + '.ass')
+        os.rename(dir_trabalho + '/' + temp_nome_episodio, dir_trabalho + '/' + novo_nome_episodio.rstrip() + '.mkv')
+
+
+# if sys.argv[1] == '-ln':
+#     dir_trabalho = sys.argv[2]
+#     lista_de_nomes = sys.argv[3]
+#
+#     arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+#     arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+#     criar_diretorio_de_backup_legendas(dir_trabalho, arquivos_no_diretorio_de_trabalho)
+#     diretorio_com_legendas = os.listdir(dir_trabalho + CONFIG["dirLegendaAntiga"])
+#
+#     # LerAquivos
+#     dir_episodios = listar_arquivos(dir_trabalho, "mkv")
+#     dir_legendas = listar_arquivos(dir_trabalho, "ass")
+#
+#     # Ordena Nomes
+#     dir_episodios = natsort.natsorted(dir_episodios, reverse=False)
+#     dir_legendas = natsort.natsorted(dir_legendas, reverse=False)
+#
+#     # LerListaDeNome
+#     arquivoComListaDeNomesDosEpisodios = open(lista_de_nomes, "r")
+#     listaDeNomesDeEpisodios = arquivoComListaDeNomesDosEpisodios.readlines()
+#
+#     for nNomeEpisodio, nLegenda, nEpisodio in zip(listaDeNomesDeEpisodios, dirLegendas, dirEpisodios):
+#         exibir_previa(nNomeEpisodio.rstrip())
+#         input('Aperte \'Enter\' para contirnuar:')
+#         # Renomeando os arquivos
+#         os.rename(dir_trabalho + '/' + nLegenda, nNomeEpisodio.rstrip() + '.ass')
+#         os.rename(dir_trabalho + '/' + nEpisodio, nNomeEpisodio.rstrip() + '.mkv')
+
+################################################
+# dirLegendas.sort(key=lambda f: int(re.sub('\D', '', f)))
+
+
+# Apenas Corigir Legendas
+# if sys.argv[1] == '-cl':
+#     # sys.argv[2] possui o diretório com os animes e legendas
+#     dir_trabalho = sys.argv[2]
+#     arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+#
+#     for arquivo_de_legenda in arquivos_no_diretorio_de_trabalho:
+#         if arquivo_de_legenda.endswith(".ass"):
+#             corrigi_estilos_subs2(dir_trabalho + '/' + arquivo_de_legenda, dir_trabalho, arquivo_de_legenda)
+#
+# # Corrigi Legendas e Renomeia Arquivos
+# if sys.argv[1] == '-clra':
+#     resolucao_x_destino = int(sys.argv[2])
+#     dir_trabalho = sys.argv[3]
+#     arquivos_no_diretorio_de_trabalho = os.listdir(dir_trabalho)
+#
+#     dir_dest = dir_trabalho + '/' + 'Novas'
+#     x = 0
+#
+#     for arquivo_de_legenda in arquivos_no_diretorio_de_trabalho:
+#         if arquivo_de_legenda.endswith(".ass"):
+#             caminho_da_legenda = dir_trabalho + '/' + arquivo_de_legenda
+#             escala = res_y_and_scale(caminho_da_legenda, resolucao_x_destino)
+#             resize_subs(caminho_da_legenda, escala, resolucao_x_destino)
+#             resize_subs2(caminho_da_legenda, escala, resolucao_x_destino)
+#             corrigi_estilos_subs2(caminho_da_legenda, dir_dest, "NovaLegenda" + str(x) + ".ass")
+#             x += 1
 
 
