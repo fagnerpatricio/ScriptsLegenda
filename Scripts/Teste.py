@@ -7,35 +7,61 @@ import xmltodict
 
 import argparse
 import xml.etree.ElementTree as ET
+import ntpath
 
-def baixa_tvmaze_legendas(codigo=None):
-    return requests.get('http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625', verify=True).json()
+from matplotlib import font_manager
 
-tree = requests.get(
-    "http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625", verify=True
-).content()
-tree = ET.parse('Scripts/httpapi.xml')
-root = tree.getroot()
-# legendas = requests.get(
-#     'http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625',
-#     verify=True).json()
+lista = ["Arial","Fira Sans"]
 
-# t = root.findall(
-#     "./episodes/episode/[title='en']"
-# )
-# for child in root.findall("./episodes/episode/title/[lang='en']"):
-#     print(child.attrib)
+def cheque_fontes_instaladas(subs):
+    lista_de_fontes = open('listaDeFontes.txt','w+')
+    for style in subs.styles.values():
+        if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
+            lista_de_fontes.write("Fonte: --> " + style.fontname + '\n')
 
-names = {}
-for i in tree.iter("episode"):
-    student_id = i.find("epno").text
-    for t in i.findall('title'):
-        if t.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
-            # n = int(i.find("epno").text)
-            try:
-                print('#' + str(int(i.find("epno").text)) + ' - ' + t.text)
-            except:
-                continue
+    lista_de_fontes.close()
+
+
+lista_de_fontes = open('listaDeFontes.txt','w+')
+for font in lista:
+    r = ntpath.basename(font_manager.findfont(font.replace('-', " ")))
+    if r  == 'DejaVuSans.ttf':
+        lista_de_fontes.write("Fonte: --> " + font + '\n')
+lista_de_fontes.close()
+
+
+
+
+# x = map(lambda x: x.split(":")[1], commands.getstatusoutput('fc-list')[1].split("\n"))
+
+# def baixa_tvmaze_legendas(codigo=None):
+#     return requests.get('http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625', verify=True).json()
+
+# tree = requests.get(
+#     "http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625", verify=True
+# ).content()
+# tree = ET.fro('Scripts/httpapi.xml')
+# root = tree.getroot()
+# # legendas = requests.get(
+# #     'http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625',
+# #     verify=True).json()
+
+# # t = root.findall(
+# #     "./episodes/episode/[title='en']"
+# # )
+# # for child in root.findall("./episodes/episode/title/[lang='en']"):
+# #     print(child.attrib)
+
+# names = {}
+# for i in tree.iter("episode"):
+#     student_id = i.find("epno").text
+#     for t in i.findall('title'):
+#         if t.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
+#             # n = int(i.find("epno").text)
+#             try:
+#                 print('#' + str(int(i.find("epno").text)) + ' - ' + t.text)
+#             except:
+#                 continue
 #     k = [x.text for x in i.findall('title')]
 #     names[student_id] = k
 

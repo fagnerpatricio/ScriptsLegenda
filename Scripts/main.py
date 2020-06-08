@@ -1,14 +1,16 @@
 import argparse
 import json
+import ntpath
 import os
 import re
 import shutil
 import sys
+import xml.etree.ElementTree as ET
 
 import natsort as natsort
 import pysubs2 as pysubs2
 import requests
-
+from matplotlib import font_manager
 from tabulate import tabulate
 
 CONFIG = json.load(open('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/config.json', 'r'))
@@ -19,10 +21,11 @@ def baixa_tvmaze_legendas(codigo=None):
     return requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes', verify=True).json()
 
 
-def baixa_anidb_legendas(codigo=None):
-    return requests.get(
-            "http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=5625", verify=True
-        ).content().getroot()
+def baixa_anidb_legendas(client=None,clientver=None, codigo=None):
+    return ET.fromstring(requests.get(
+        "http://api.anidb.net:9001/httpapi?request=anime&client="+client+"&clientver="+clientver+"&protover=1&aid="+codigo,
+        verify=True
+    ).content)
 
 
 def dir_bak_leg(dir_trabalho_temp=None, dir_legenda=None):
@@ -140,6 +143,12 @@ def resize_subs(subs, res_x_dest=640):
             continue
 
 
+def cheque_fontes_instaladas(subs,arquivo):
+    for style in subs.styles.values():
+        if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
+            arquivo.write("Fonte: --> " + style.fontname + '\n')
+
+
 def trocar_caractere(texto):
     replacements = {
         "?": "^",
@@ -151,13 +160,45 @@ def trocar_caractere(texto):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Um programa de exemplo.')
+    parser = argparse.ArgumentParser(description='Um programa de exemplo.',
+                                     argument_default=argparse.SUPPRESS)
+
+    parser.add_argument(
+        '-anidb',
+        action='store',
+        dest='cod_anidb',
+        required=False,
+        default=None,
+        help=
+        'Indica o código do animes para buscar as informações no site da TVMaze'
+    )
+
+    parser.add_argument(
+        '-anidb-cliente',
+        action='store',
+        dest='cod_anidb_cliente',
+        required=False,
+        default=None,
+        help=
+        'Indica o código do animes para buscar as informações no site da TVMaze'
+    )
+
+    parser.add_argument(
+        '-versao-cliente',
+        action='store',
+        dest='cod_anidb_versao_cliente',
+        required=False,
+        default=None,
+        help=
+        'Indica o código do animes para buscar as informações no site da TVMaze'
+    )
 
     parser.add_argument(
         '-tvmaze',
         action='store',
         dest='cod_tvmaze',
         required=False,
+        default=None,
         help='Indica o código do animes para buscar as informações no site da TVMaze'
     )
 
@@ -166,6 +207,7 @@ if __name__ == "__main__":
         action='store',
         dest='temporada',
         required=False,
+        default=-1,
         help='Indica a temporada do anime'
     )
 
@@ -179,10 +221,24 @@ if __name__ == "__main__":
 
     argumentos = parser.parse_args()
 
-    # if sys.argv[1] == '-tvmaze':
-    # lista_de_episodios_tvmaze = baixa_tvmaze_legendas(argumentos.cod_tvmaze)
-    lista_de_episodios_anidb = baixa_anidb_legendas(argumentos.cod_tvmaze)
-    temporada_episodios = int(argumentos.temporada)
+    lista_de_episodios_tvmaze = argumentos.cod_tvmaze
+    lista_de_episodios_anidb = argumentos.cod_anidb
+
+    if argumentos.cod_anidb and (argumentos.cod_anidb_cliente is None or argumentos.cod_anidb_versao_cliente is None):
+        parser.error("-anidb [CÓDIGO] -anidb-cliente [CLIENTE] -versao-cliente [INT]")
+
+    if lista_de_episodios_tvmaze != None:
+        lista_de_episodios_tvmaze = baixa_tvmaze_legendas(argumentos.cod_tvmaze)
+        temporada_episodios = int(argumentos.temporada)
+
+    if lista_de_episodios_anidb != None:
+        lista_de_episodios_anidb = baixa_anidb_legendas(argumentos.cod_anidb_cliente, argumentos.cod_anidb_versao_cliente, argumentos.cod_anidb)
+
+    # try:
+    #     temporada_episodios = int(argumentos.temporada)
+    # except:
+    #     temporada_episodios = None
+
     dir_trabalho = argumentos.dir_trabalho
 
     arq_dir_trabalho = os.listdir(dir_trabalho)
@@ -190,12 +246,17 @@ if __name__ == "__main__":
 
     dir_c_leg = os.listdir(dir_trabalho + CONFIG["dirLegendaAntiga"])
 
+    lista_de_fontes = open('listaDeFontes.txt', 'w+')
+
     for arquivo_de_legenda in dir_c_leg:
         if arquivo_de_legenda.endswith(".ass"):
             subs = pysubs2.load(dir_trabalho + CONFIG["dirLegendaAntiga"] +'/'+ arquivo_de_legenda, encoding="utf-8")
             resize_subs(subs)
             corrigi_estilos_subs(subs, dir_trabalho, arquivo_de_legenda)
+            cheque_fontes_instaladas(subs,lista_de_fontes)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
+
+    lista_de_fontes.close()
 
     # LerAquivos
     dir_episodios = [x for x in os.listdir(dir_trabalho) if x.endswith(".mkv")]
@@ -209,19 +270,21 @@ if __name__ == "__main__":
     lista_de_nomes_de_episodios = []
     lista_de_nomes_de_ovas = []
 
-    # for episodio in lista_de_episodios_tvmaze:
-    #     if episodio["number"] != None and episodio["season"] == temporada_episodios:
-    #         lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
-    #     else:
-    #         lista_de_nomes_de_ovas.append("#S(" + episodio["airdate"] +") - " + episodio["name"])
+    if lista_de_episodios_tvmaze != None:
+        for episodio in lista_de_episodios_tvmaze:
+            if episodio["number"] != None and episodio["season"] == temporada_episodios:
+                lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
+            else:
+                lista_de_nomes_de_ovas.append("#S(" + episodio["airdate"] +") - " + episodio["name"])
 
-    for episodio in lista_de_episodios_anidb.iter("episode"):
-        for titulo in episodio.findall('title'):
-            if titulo.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
-                try:
-                    lista_de_nomes_de_episodios.append('#' + str(int(episodio.find("epno").text)) + ' - ' + titulo.text)
-                except:
-                    lista_de_nomes_de_ovas.append('#' + str(int(episodio.find("epno").text)) + ' - ' + titulo.text)
+    if lista_de_episodios_anidb != None:
+        for episodio in lista_de_episodios_anidb.iter("episode"):
+            for titulo in episodio.findall('title'):
+                if titulo.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
+                    try:
+                        lista_de_nomes_de_episodios.append('#' + str(int(episodio.find("epno").text)) + ' - ' + titulo.text)
+                    except:
+                        lista_de_nomes_de_ovas.append('#' + episodio.find("epno").text + ' - ' + titulo.text)
 
     lista_de_nomes_de_episodios = natsort.natsorted(lista_de_nomes_de_episodios, reverse=False)
     lista_de_nomes_de_ovas = natsort.natsorted(lista_de_nomes_de_ovas, reverse=False)

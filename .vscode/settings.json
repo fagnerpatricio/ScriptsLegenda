@@ -8,6 +8,8 @@
     "editor.formatOnPaste": true,
     "editor.multiCursorModifier": "ctrlCmd",
     "editor.snippetSuggestions": "top",
+    "editor.fontFamily": "'Fira Code', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontSize": 18,
     "editor.rulers": [
         {
             "column": 79,
@@ -15,10 +17,10 @@
         },
         100, // <- a ruler in the default color or as customized at column 0
         {
-            "column": 120,
+            "column": 160,
             "color": "#ff0000"
         },
     ],
-    "editor.wordWrapColumn": 120,
+    "editor.wordWrapColumn": 160,
     "editor.wordWrap": "wordWrapColumn",
 }
