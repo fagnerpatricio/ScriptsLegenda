@@ -1,0 +1,16 @@
+{
+    "estilos": [
+        "Style: Padrão",
+        "Style"
+    ],
+    "dirLegendaAntiga": "/Legendas Originais",
+    "extensaoDasLegendas": ".ass",
+    "arquivoModeloDeCabecalho": "/home/fagner/ProjetosVSCode/RenameAnimes/modeloCabecalhosLegenda.txt",
+    "parametroDeSeparacaoDoCabecalho": "[V4+ Styles]",
+    "fontesEstilos": {
+        "Default": "FiraSans-Regular",
+        "Italics": "FiraSans-Regular",
+        "Signs": "FiraSans-Regular"
+    },
+    "fontePadrao": "FiraSans-Regular"
+}
