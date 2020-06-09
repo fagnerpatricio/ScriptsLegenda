@@ -115,7 +115,7 @@ def resize_subs(subs, res_x_dest=640):
 
     for line in subs:
         try:
-            busca_padrao = re.findall('(?<=p1).*?(?={)', line.text)
+            busca_padrao = re.findall('(?<=p[1-4]).*?(?={)', line.text)
             antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
 
             novo_valor = ''
