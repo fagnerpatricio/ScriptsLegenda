@@ -115,6 +115,24 @@ def resize_subs(subs, res_x_dest=640):
 
     for line in subs:
         try:
+            busca_padrao = re.findall('(?<=p1).*?(?={)', line.text)
+            antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+
+            novo_valor = ''
+            for valor in antigos_valores:
+                try:
+                    novo_valor += str("{:.0f}".format(float(int(valor) * escala)) + ',')
+                except:
+                    novo_valor += valor + ','
+                    continue
+
+            novo_valor = novo_valor.replace(','," ")
+            line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+        except:
+            continue
+
+    for line in subs:
+        try:
             busca_padrao = re.findall('fs([0-9]+)', line.text)
             if busca_padrao[0]:
                 antigas_coordenadas = busca_padrao[0]
@@ -132,12 +150,14 @@ def resize_subs(subs, res_x_dest=640):
             if len(busca_padrao) == 0:
                 busca_padrao = re.findall('org\((.+?)\)', line.text)
 
-            if busca_padrao[0]:
+            busca_padrao = busca_padrao[0].split(',')
+
+            for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
                 novas_coordenadas = []
-                novas_coordenadas.append("{:.3f}".format(float(busca_padrao[0].split(',')[0]) * escala))
-                novas_coordenadas.append("{:.3f}".format(float(busca_padrao[0].split(',')[1]) * escala))
+                novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[0]) * escala)))
+                novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[1]) * escala)))
                 lista_de_novas_cordenada = ','.join(novas_coordenadas)
-                antigas_coordenadas = busca_padrao[0].split(',')[0] + ',' + busca_padrao[0].split(',')[1]
+                antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
                 line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
         except:
             continue

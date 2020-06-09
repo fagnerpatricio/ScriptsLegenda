@@ -5,7 +5,7 @@
     "editor.detectIndentation": true,
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "editor.multiCursorModifier": "ctrlCmd",
     "editor.snippetSuggestions": "top",
     "editor.fontFamily": "'Fira Code', 'monospace', monospace, 'Droid Sans Fallback'",

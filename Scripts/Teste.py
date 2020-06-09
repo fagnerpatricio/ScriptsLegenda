@@ -8,26 +8,83 @@ import xmltodict
 import argparse
 import xml.etree.ElementTree as ET
 import ntpath
+import pysubs2
+import re
 
 from matplotlib import font_manager
 
-lista = ["Arial","Fira Sans"]
+subs = [
+    'Dialogue: 0,0:13:36.16,0:13:40.17,Signs,,0,0,0,,{\blur1\fax0.03\frz358.421\move(928,472,1352,472)\p1\c&H2F2628&}m 0 0 l 437 0 437 95 0 95{\p0}',
+    'Dialogue: 0,0:13:36.16,0:13:40.17,Signs,,0,0,0,,{\blur0.5\fax0.03\fs60\c&H6792AE&\frz358.421\move(929,468,1353,468)\fnImpress BT}Biblioteca Sana'
+]
 
-def cheque_fontes_instaladas(subs):
-    lista_de_fontes = open('listaDeFontes.txt','w+')
-    for style in subs.styles.values():
-        if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
-            lista_de_fontes.write("Fonte: --> " + style.fontname + '\n')
+novas_linhas = []
 
-    lista_de_fontes.close()
+escala = 0.5
+
+l  = '\p1\c&H2F2628&}m 0 0 l 437 0 437 95 0 95{\p0}'
+
+for line in subs:
+    busca_padrao = re.findall('(?<=p1).*?(?={)', line.text)
+    j = busca_padrao[0].split('m')[1]
+    antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+
+    novo_valor = ''
+    for valor in antigos_valores:
+        try:
+            novo_valor += str("{:.0f}".format(float(int(valor) * escala)) + ',')
+        except:
+            novo_valor += valor + ','
+            continue
+
+    novo_valor = novo_valor.replace(','," ")
+    line = line.replace(j," " + novo_valor[:-1])
+    print(line)
+
+for line in subs:
+    try:
+        busca_padrao = re.findall('move\((.+?)\)', line)
+        if len(busca_padrao) == 0:
+            busca_padrao = re.findall('pos\((.+?)\)', line)
+        if len(busca_padrao) == 0:
+            busca_padrao = re.findall('org\((.+?)\)', line)
+
+        busca_padrao = busca_padrao[0].split(',')
+
+        for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
+            novas_coordenadas = []
+            novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[0]) * escala)))
+            novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[1]) * escala)))
+            lista_de_novas_cordenada = ','.join(novas_coordenadas)
+            antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
+            line = line.replace(antigas_coordenadas, lista_de_novas_cordenada)
+
+        novas_linhas.append(line)
+    except:
+        continue
+
+print(subs[0] + '\n' + novas_linhas[0] + '\n' + subs[1] + '\n' + novas_linhas[1])
+
+# subs = pysubs2.load('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/[FAL]To_LOVE-Ru_Darkness_2nd-_-07(1280x720 Hi10P BD AAC)[583F1CD6].ass', encoding="utf-8")
+# resize_subs(subs)
+
+# lista = ["Arial","Fira Sans"]
+
+# def cheque_fontes_instaladas(subs):
+#     lista_de_fontes = open('listaDeFontes.txt','w+')
+#     for style in subs.styles.values():
+#         if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
+#             lista_de_fontes.write("Fonte: --> " + style.fontname + '\n')
+
+#     lista_de_fontes.close()
 
 
-lista_de_fontes = open('listaDeFontes.txt','w+')
-for font in lista:
-    r = ntpath.basename(font_manager.findfont(font.replace('-', " ")))
-    if r  == 'DejaVuSans.ttf':
-        lista_de_fontes.write("Fonte: --> " + font + '\n')
-lista_de_fontes.close()
+# lista_de_fontes = open('listaDeFontes.txt','w+')
+# for font in lista:
+#     r = ntpath.basename(font_manager.findfont(font.replace('-', " ")))
+#     if r  == 'DejaVuSans.ttf':
+#         lista_de_fontes.write("Fonte: --> " + font + '\n')
+# lista_de_fontes.close()
 
 
 
