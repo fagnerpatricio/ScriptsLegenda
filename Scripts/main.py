@@ -14,7 +14,7 @@ from matplotlib import font_manager
 from tabulate import tabulate
 
 CONFIG = json.load(open('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/config.json', 'r'))
-CONFIG_ESTILOS_LEGENDAS = json.load(open('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/estilos.json', 'r'))
+# CONFIG_ESTILOS_LEGENDAS = json.load(open('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/estilos.json', 'r'))
 
 Padrao = {
         "fontname": "Fira Sans",
@@ -106,11 +106,20 @@ Italico = {
         "encoding": 0
     }
 
+SoFonte = {
+    "fontname": "Fira Sans"
+}
 estilos = {
     'Default': Padrao,
     'Main Dialogue': Padrao,
     'Italics Dialogue': Italico,
-    'Default - italics': Italico
+    'Default - italics': Italico,
+}
+
+fontes_legendas_otaku = {
+    'Arial':'Roboto',
+    'Times New Roman':'Roboto Slab',
+    'Trebuchet MS': 'Fira Sans'
 }
 
 CONFIG_ESTILOS_LEGENDAS = json.loads(json.dumps(estilos))
@@ -211,6 +220,10 @@ def resize_subs(subs, res_x_dest=640):
         style.outline = int(style.outline * escala)
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
+        try:
+            style.fontname = fontes_legendas_otaku[style.fontname]
+        except:
+            continue
 
     for line in subs:
         try:
@@ -236,7 +249,7 @@ def resize_subs(subs, res_x_dest=640):
             if busca_padrao[0]:
                 antigas_coordenadas = busca_padrao[0]
                 novas_coordenadas = []
-                novas_coordenadas.append("{:.3f}".format(float(int(busca_padrao[0]) * escala)))
+                novas_coordenadas.append("{:.0f}".format(float(int(busca_padrao[0]) * escala)))
                 line.text = line.text.replace("fs" + antigas_coordenadas, "fs" + novas_coordenadas[0])
         except:
             continue
@@ -384,8 +397,15 @@ if __name__ == "__main__":
     for arquivo_de_legenda in dir_c_leg:
         if arquivo_de_legenda.endswith(".ass"):
             subs = pysubs2.load(dir_trabalho + CONFIG["dirLegendaAntiga"] +'/'+ arquivo_de_legenda, encoding="utf-8")
-            resize_subs(subs)
-            corrigi_estilos_subs(subs, dir_trabalho, arquivo_de_legenda)
+            if modo_de_operacao == 'crunchroll':
+                for style in subs.styles.values():
+                    try:
+                        style.fontname = fontes_legendas_otaku[style.fontname]
+                    except:
+                        continue
+            else:
+                resize_subs(subs)
+                corrigi_estilos_subs(subs, dir_trabalho, arquivo_de_legenda)
             cheque_fontes_instaladas(subs,lista_de_fontes)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
