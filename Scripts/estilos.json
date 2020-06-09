@@ -1,5 +1,5 @@
 {
-    "Default": {
+    "Padrao": {
         "fontname": "Fira Sans",
         "fontsize": 22,
         "backcolor": [
@@ -43,7 +43,7 @@
         "marginv": 15,
         "encoding": 0
     },
-    "Default-FT": {
+    "Italico": {
         "fontname": "Fira Sans",
         "fontsize": 22,
         "backcolor": [
@@ -135,3 +135,4 @@
         "fontsize": 22
     }
 }
+

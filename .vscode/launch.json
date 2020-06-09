@@ -11,12 +11,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "-tvmaze",
-                "5196",
-                "-t",
-                "4",
+                "-m",
+                "crunchroll",
+                // "-tvmaze",
+                // "5196",
+                // "-t",
+                // "4",
                 "-d",
-                "/run/media/fagner/Jogos & Backup/Animes/Não Organizados/[FAL] To Love-Ru BD/DesenScript"
+                "/run/media/fagner/SeagateUSB/Animes Não Vistos/Sound/[VCB-Studio] Hibike! Euphonium 2 [Ma10p_1080p]"
             ]
         }
     ]

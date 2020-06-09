@@ -16,6 +16,106 @@ from tabulate import tabulate
 CONFIG = json.load(open('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/config.json', 'r'))
 CONFIG_ESTILOS_LEGENDAS = json.load(open('/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/estilos.json', 'r'))
 
+Padrao = {
+        "fontname": "Fira Sans",
+        "fontsize": 22,
+        "backcolor": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "outlinecolor": [
+            25,
+            25,
+            25,
+            0
+        ],
+        "secondarycolor": [
+            0,
+            0,
+            255,
+            0
+        ],
+        "primarycolor": [
+            255,
+            255,
+            255,
+            0
+        ],
+        "bold": -1,
+        "italic": 0,
+        "underline": 0,
+        "strikeout": 0,
+        "scalex": 100,
+        "scaley": 100,
+        "spacing": 0,
+        "angle": 0,
+        "borderstyle": 1,
+        "outline": 2,
+        "shadow": 1,
+        "alignment": 2,
+        "marginl": 40,
+        "marginr": 40,
+        "marginv": 15,
+        "encoding": 0
+    }
+
+Italico = {
+        "fontname": "Fira Sans",
+        "fontsize": 22,
+        "backcolor": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "outlinecolor": [
+            25,
+            25,
+            25,
+            0
+        ],
+        "secondarycolor": [
+            0,
+            0,
+            255,
+            0
+        ],
+        "primarycolor": [
+            255,
+            255,
+            255,
+            0
+        ],
+        "bold": -1,
+        "italic": -1,
+        "underline": 0,
+        "strikeout": 0,
+        "scalex": 100,
+        "scaley": 100,
+        "spacing": 0,
+        "angle": 0,
+        "borderstyle": 1,
+        "outline": 2,
+        "shadow": 1,
+        "alignment": 2,
+        "marginl": 40,
+        "marginr": 40,
+        "marginv": 15,
+        "encoding": 0
+    }
+
+estilos = {
+    'Default': Padrao,
+    'Main Dialogue': Padrao,
+    'Italics Dialogue': Italico,
+    'Default - italics': Italico
+}
+
+CONFIG_ESTILOS_LEGENDAS = json.loads(json.dumps(estilos))
+
+print(CONFIG_ESTILOS_LEGENDAS['Default - italics']['fontname'])
 
 def baixa_tvmaze_legendas(codigo=None):
     return requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes', verify=True).json()
@@ -182,6 +282,19 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Um programa de exemplo.',
                                      argument_default=argparse.SUPPRESS)
 
+    choices=range(5, 10)
+
+    parser.add_argument(
+        '-m',
+        action='store',
+        dest='cod_m',
+        required=True,
+        default=None,
+        choices=['crunchroll', 'anidb', 'tvmaze'],
+        help=
+        'Indica o código do animes para buscar as informações no site da TVMaze'
+    )
+
     parser.add_argument(
         '-anidb',
         action='store',
@@ -240,6 +353,7 @@ if __name__ == "__main__":
 
     argumentos = parser.parse_args()
 
+    modo_de_operacao = argumentos.cod_m
     lista_de_episodios_tvmaze = argumentos.cod_tvmaze
     lista_de_episodios_anidb = argumentos.cod_anidb
 
@@ -288,6 +402,9 @@ if __name__ == "__main__":
     # Criar Lista de nomes de Episódios
     lista_de_nomes_de_episodios = []
     lista_de_nomes_de_ovas = []
+
+    if modo_de_operacao == 'crunchroll':
+        lista_de_nomes_de_episodios = ['#' + os.path.splitext(x.split('Episódio ')[1])[0].replace(".ptBR","") for x in dir_legendas]
 
     if lista_de_episodios_tvmaze != None:
         for episodio in lista_de_episodios_tvmaze:
