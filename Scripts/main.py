@@ -65,7 +65,6 @@ def corrigi_estilos_subs(subs, temp_dir_salvar, temp_nome_salvar):
     }
 
     subs.aegisub_project = {}
-    novas_fontes_estilos = CONFIG["fontesEstilos"]
 
     lista_com_contadores_de_estilos = {}
 
@@ -100,9 +99,9 @@ def corrigi_estilos_subs(subs, temp_dir_salvar, temp_nome_salvar):
 
 def resize_subs(subs, res_x_dest=640):
     res_x_src = int(subs.info["PlayResX"])
-    res_y_src = int(subs.info["PlayResY"])
+    # res_y_src = int(subs.info["PlayResY"])
     escala = res_x_dest / float(res_x_src)
-    res_y_dest = int(escala * res_y_src)
+    # res_y_dest = int(escala * res_y_src)
 
     for style in subs.styles.values():
         style.fontsize = int(style.fontsize * escala)
@@ -115,7 +114,7 @@ def resize_subs(subs, res_x_dest=640):
 
     for line in subs:
         try:
-            busca_padrao = re.findall('(?<=p[1-4]).*?(?={)', line.text)
+            busca_padrao = re.findall(r'(?<=p[1-4]).*?(?={)', line.text)
             antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
 
             novo_valor = ''
@@ -133,7 +132,7 @@ def resize_subs(subs, res_x_dest=640):
 
     for line in subs:
         try:
-            busca_padrao = re.findall('fs([0-9]+)', line.text)
+            busca_padrao = re.findall(r'fs([0-9]+)', line.text)
             if busca_padrao[0]:
                 antigas_coordenadas = busca_padrao[0]
                 novas_coordenadas = []
@@ -144,11 +143,11 @@ def resize_subs(subs, res_x_dest=640):
 
     for line in subs:
         try:
-            busca_padrao = re.findall('move\((.+?)\)', line.text)
+            busca_padrao = re.findall(r'move\((.+?)\)', line.text)
             if len(busca_padrao) == 0:
-                busca_padrao = re.findall('pos\((.+?)\)', line.text)
+                busca_padrao = re.findall(r'pos\((.+?)\)', line.text)
             if len(busca_padrao) == 0:
-                busca_padrao = re.findall('org\((.+?)\)', line.text)
+                busca_padrao = re.findall(r'org\((.+?)\)', line.text)
 
             busca_padrao = busca_padrao[0].split(',')
 
