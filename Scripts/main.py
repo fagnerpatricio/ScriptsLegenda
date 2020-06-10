@@ -118,6 +118,7 @@ estilos = {
 
 fontes_legendas_otaku = {
     'Arial':'Roboto',
+    'Comic Sans MS': 'Comic Neue',
     'Times New Roman':'Roboto Slab',
     'Trebuchet MS': 'Fira Sans'
 }
@@ -164,7 +165,7 @@ def exibir_previa(nome_temp=None, temp_nome_legenda=None, temp_nome_episodio=Non
     print('Episódio:\t' + temp_nome_episodio)
 
 
-def corrigi_estilos_subs(subs, temp_dir_salvar, temp_nome_salvar):
+def corrigi_estilos_subs(subs, temp_dir_salvar, temp_nome_salvar, modo=None):
     subs.info = {
         "Title": "[Legendas-Otaku] Português (Brasil)",
         "PlayResX": 640,
@@ -181,16 +182,17 @@ def corrigi_estilos_subs(subs, temp_dir_salvar, temp_nome_salvar):
     altera_cor = lambda x, y: pysubs2.Color(*x) if True else y
 
     for nome_estilo, estilo in zip(subs.styles.keys(), subs.styles.values()):
-        for atributo in frozenset(estilo.FIELDS):
-            try:
-                if any(x == atributo for x in ["backcolor", "outlinecolor", "secondarycolor","primarycolor"]):
-                    vars(estilo)[atributo] = altera_cor(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo],
-                                                        vars(estilo)[atributo])
-                else:
-                    vars(estilo)[atributo] = altera_elementos(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo],
-                                                              vars(estilo)[atributo])
-            except:
-                continue
+        if modo != 'crunchroll':
+            for atributo in frozenset(estilo.FIELDS):
+                try:
+                    if any(x == atributo for x in ["backcolor", "outlinecolor", "secondarycolor","primarycolor"]):
+                        vars(estilo)[atributo] = altera_cor(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo],
+                                                            vars(estilo)[atributo])
+                    else:
+                        vars(estilo)[atributo] = altera_elementos(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo],
+                                                                vars(estilo)[atributo])
+                except:
+                    continue
 
         #Verifica se um Stylo está sendo usado
         contador = 0
@@ -210,7 +212,7 @@ def resize_subs(subs, res_x_dest=640):
     res_x_src = int(subs.info["PlayResX"])
     # res_y_src = int(subs.info["PlayResY"])
     escala = res_x_dest / float(res_x_src)
-    # res_y_dest = int(escala * res_y_src)
+    #res_y_dest = int(escala * res_y_src)
 
     for style in subs.styles.values():
         style.fontsize = int(style.fontsize * escala)
@@ -220,15 +222,17 @@ def resize_subs(subs, res_x_dest=640):
         style.outline = int(style.outline * escala)
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
-        try:
-            style.fontname = fontes_legendas_otaku[style.fontname]
-        except:
-            continue
 
     for line in subs:
         try:
+            substituicao_tipo01 = substituicao_tipo02 = False
             busca_padrao = re.findall(r'(?<=p[1-4]).*?(?={)', line.text)
-            antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+            if len(busca_padrao) > 0:
+                substituicao_tipo01 = True
+                antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+            if len(busca_padrao) == 0:
+                substituicao_tipo02 = True
+                antigos_valores = busca_padrao = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:].split(" ")
 
             novo_valor = ''
             for valor in antigos_valores:
@@ -239,7 +243,11 @@ def resize_subs(subs, res_x_dest=640):
                     continue
 
             novo_valor = novo_valor.replace(','," ")
-            line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+            if substituicao_tipo01:
+                line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+            if substituicao_tipo02:
+                v = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:]
+                line.text = line.text.replace(v," " + novo_valor[:-1])
         except:
             continue
 
@@ -249,7 +257,7 @@ def resize_subs(subs, res_x_dest=640):
             if busca_padrao[0]:
                 antigas_coordenadas = busca_padrao[0]
                 novas_coordenadas = []
-                novas_coordenadas.append("{:.0f}".format(float(int(busca_padrao[0]) * escala)))
+                novas_coordenadas.append("{:.3f}".format(float(int(busca_padrao[0]) * escala)))
                 line.text = line.text.replace("fs" + antigas_coordenadas, "fs" + novas_coordenadas[0])
         except:
             continue
@@ -259,6 +267,7 @@ def resize_subs(subs, res_x_dest=640):
             busca_padrao = re.findall(r'move\((.+?)\)', line.text)
             if len(busca_padrao) == 0:
                 busca_padrao = re.findall(r'pos\((.+?)\)', line.text)
+                print(busca_padrao)
             if len(busca_padrao) == 0:
                 busca_padrao = re.findall(r'org\((.+?)\)', line.text)
 
@@ -266,8 +275,8 @@ def resize_subs(subs, res_x_dest=640):
 
             for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
                 novas_coordenadas = []
-                novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[0]) * escala)))
-                novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[1]) * escala)))
+                novas_coordenadas.append("{:.0f}".format(float(coordenadas[0]) * escala))
+                novas_coordenadas.append("{:.0f}".format(float(coordenadas[1]) * escala))
                 lista_de_novas_cordenada = ','.join(novas_coordenadas)
                 antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
                 line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
@@ -290,6 +299,26 @@ def trocar_caractere(texto):
 
     return "".join([replacements.get(c, c) for c in texto])
 
+def caminho_legenda(dir_c_leg):
+    lista_de_fontes = open('listaDeFontes.txt', 'w+')
+
+    for arquivo_de_legenda in dir_c_leg:
+        if arquivo_de_legenda.endswith(".ass"):
+            subs = pysubs2.load(dir_trabalho + CONFIG["dirLegendaAntiga"] +'/'+ arquivo_de_legenda, encoding="utf-8")
+            if any (modo_de_operacao == x for x in ['solegendas','crunchroll']):
+                for style in subs.styles.values():
+                    try:
+                        style.fontname = fontes_legendas_otaku[style.fontname]
+                    except:
+                        continue
+            else:
+                resize_subs(subs)
+            corrigi_estilos_subs(subs, dir_trabalho, arquivo_de_legenda, modo_de_operacao)
+            cheque_fontes_instaladas(subs,lista_de_fontes)
+            subs.save(dir_trabalho + '/' + arquivo_de_legenda)
+
+    lista_de_fontes.close()
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Um programa de exemplo.',
@@ -303,7 +332,7 @@ if __name__ == "__main__":
         dest='cod_m',
         required=True,
         default=None,
-        choices=['crunchroll', 'anidb', 'tvmaze'],
+        choices=['solegendas','crunchroll', 'anidb', 'tvmaze'],
         help=
         'Indica o código do animes para buscar as informações no site da TVMaze'
     )
@@ -392,76 +421,80 @@ if __name__ == "__main__":
 
     dir_c_leg = os.listdir(dir_trabalho + CONFIG["dirLegendaAntiga"])
 
-    lista_de_fontes = open('listaDeFontes.txt', 'w+')
+    if any (modo_de_operacao == x for x in ['solegendas','crunchroll', 'anidb', 'tvmaze']):
+        caminho_legenda(dir_c_leg)
 
-    for arquivo_de_legenda in dir_c_leg:
-        if arquivo_de_legenda.endswith(".ass"):
-            subs = pysubs2.load(dir_trabalho + CONFIG["dirLegendaAntiga"] +'/'+ arquivo_de_legenda, encoding="utf-8")
-            if modo_de_operacao == 'crunchroll':
-                for style in subs.styles.values():
-                    try:
-                        style.fontname = fontes_legendas_otaku[style.fontname]
-                    except:
-                        continue
-            else:
-                resize_subs(subs)
-                corrigi_estilos_subs(subs, dir_trabalho, arquivo_de_legenda)
-            cheque_fontes_instaladas(subs,lista_de_fontes)
-            subs.save(dir_trabalho + '/' + arquivo_de_legenda)
+    # lista_de_fontes = open('listaDeFontes.txt', 'w+')
 
-    lista_de_fontes.close()
+    # for arquivo_de_legenda in dir_c_leg:
+    #     if arquivo_de_legenda.endswith(".ass"):
+    #         subs = pysubs2.load(dir_trabalho + CONFIG["dirLegendaAntiga"] +'/'+ arquivo_de_legenda, encoding="utf-8")
+    #         if modo_de_operacao == 'crunchroll':
+    #             for style in subs.styles.values():
+    #                 try:
+    #                     style.fontname = fontes_legendas_otaku[style.fontname]
+    #                 except:
+    #                     continue
+    #         else:
+    #             resize_subs(subs)
+    #         corrigi_estilos_subs(subs, dir_trabalho, arquivo_de_legenda, modo_de_operacao)
+    #         cheque_fontes_instaladas(subs,lista_de_fontes)
+    #         subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
-    # LerAquivos
-    dir_episodios = [x for x in os.listdir(dir_trabalho) if x.endswith(".mkv")]
-    dir_legendas = [x for x in os.listdir(dir_trabalho) if x.endswith(".ass")]
+    # lista_de_fontes.close()
 
-    # Ordena Nomes
-    dir_episodios = natsort.natsorted(dir_episodios, reverse=False)
-    dir_legendas = natsort.natsorted(dir_legendas, reverse=False)
+    if any (modo_de_operacao == x for x in ['crunchroll', 'anidb', 'tvmaze']):
+        # LerAquivos
+        dir_episodios = [x for x in os.listdir(dir_trabalho) if x.endswith(".mkv")]
+        dir_legendas = [x for x in os.listdir(dir_trabalho) if x.endswith(".ass")]
 
-    # Criar Lista de nomes de Episódios
-    lista_de_nomes_de_episodios = []
-    lista_de_nomes_de_ovas = []
+        # Ordena Nomes
+        dir_episodios = natsort.natsorted(dir_episodios, reverse=False)
+        dir_legendas = natsort.natsorted(dir_legendas, reverse=False)
 
-    if modo_de_operacao == 'crunchroll':
-        lista_de_nomes_de_episodios = ['#' + os.path.splitext(x.split('Episódio ')[1])[0].replace(".ptBR","") for x in dir_legendas]
+        # Criar Lista de nomes de Episódios
+        lista_de_nomes_de_episodios = []
+        lista_de_nomes_de_ovas = []
 
-    if lista_de_episodios_tvmaze != None:
-        for episodio in lista_de_episodios_tvmaze:
-            if episodio["number"] != None and episodio["season"] == temporada_episodios:
-                lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
-            else:
-                lista_de_nomes_de_ovas.append("#S(" + episodio["airdate"] +") - " + episodio["name"])
+        if modo_de_operacao == 'crunchroll':
+            lista_de_nomes_de_episodios = ['#' + os.path.splitext(x.split('Episódio ')[1])[0].replace(".ptBR","") for x in dir_legendas]
 
-    if lista_de_episodios_anidb != None:
-        for episodio in lista_de_episodios_anidb.iter("episode"):
-            for titulo in episodio.findall('title'):
-                if titulo.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
-                    try:
-                        lista_de_nomes_de_episodios.append('#' + str(int(episodio.find("epno").text)) + ' - ' + titulo.text)
-                    except:
-                        lista_de_nomes_de_ovas.append('#' + episodio.find("epno").text + ' - ' + titulo.text)
+        if lista_de_episodios_tvmaze != None:
+            for episodio in lista_de_episodios_tvmaze:
+                if episodio["number"] != None and episodio["season"] == temporada_episodios:
+                    lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
+                else:
+                    lista_de_nomes_de_ovas.append("#S(" + episodio["airdate"] +") - " + episodio["name"])
 
-    lista_de_nomes_de_episodios = natsort.natsorted(lista_de_nomes_de_episodios, reverse=False)
-    lista_de_nomes_de_ovas = natsort.natsorted(lista_de_nomes_de_ovas, reverse=False)
+        if lista_de_episodios_anidb != None:
+            for episodio in lista_de_episodios_anidb.iter("episode"):
+                for titulo in episodio.findall('title'):
+                    if titulo.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
+                        try:
+                            lista_de_nomes_de_episodios.append('#' + str(int(episodio.find("epno").text)) + ' - ' + titulo.text)
+                        except:
+                            lista_de_nomes_de_ovas.append('#' + episodio.find("epno").text + ' - ' + titulo.text)
 
-    print(
-        tabulate(
-            [
-                list(ele) for ele in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
-            ],
-            headers=[
-                'Novo Nome Dos Arquivos',
-                'Arquivos de Legendas',
-                'Arquivo de Vídeo'
-            ],
-            tablefmt="fancy_grid"
+        lista_de_nomes_de_episodios = natsort.natsorted(lista_de_nomes_de_episodios, reverse=False)
+        lista_de_nomes_de_ovas = natsort.natsorted(lista_de_nomes_de_ovas, reverse=False)
+
+        print(
+            tabulate(
+                [
+                    list(ele) for ele in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
+                ],
+                headers=[
+                    'Novo Nome Dos Arquivos',
+                    'Arquivos de Legendas',
+                    'Arquivo de Vídeo'
+                ],
+                tablefmt="fancy_grid"
+            )
         )
-    )
 
-    input('Aperte \'Enter\' para contirnuar:')
+        input('Aperte \'Enter\' para contirnuar:')
 
-    for nn_episodio, tn_leg, tn_ep in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
-        # Renomeando os arquivos
-        shutil.move(dir_trabalho + '/' + tn_leg, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + '.ass')
-        shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + '.mkv')
+        for nn_episodio, tn_leg, tn_ep in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
+            # Renomeando os arquivos
+            shutil.move(dir_trabalho + '/' + tn_leg, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + '.ass')
+            shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + '.mkv')

@@ -12,13 +12,13 @@
             "console": "integratedTerminal",
             "args": [
                 "-m",
-                "crunchroll",
-                // "-tvmaze",
-                // "5196",
-                // "-t",
-                // "4",
+                "tvmaze",
+                "-tvmaze",
+                "5196",
+                "-t",
+                "4",
                 "-d",
-                "/run/media/fagner/SeagateUSB/Animes Não Vistos/Sound! Euphonium/Sound! Euphonium"
+                "/run/media/fagner/SeagateUSB/Animes/To Love-Ru Trouble (2008)/To LOVE-Ru Darkness 2nd"
             ]
         }
     ]

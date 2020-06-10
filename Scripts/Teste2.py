@@ -55,8 +55,14 @@ def resize_subs(subs, res_x_dest=640):
 
     for line in subs:
         try:
+            substituicao_tipo01 = substituicao_tipo02 = False
             busca_padrao = re.findall(r'(?<=p[1-4]).*?(?={)', line.text)
-            antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+            if len(busca_padrao) > 0:
+                substituicao_tipo01 = True
+                antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+            if len(busca_padrao) == 0:
+                substituicao_tipo02 = True
+                antigos_valores = busca_padrao = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:].split(" ")
 
             novo_valor = ''
             for valor in antigos_valores:
@@ -67,7 +73,11 @@ def resize_subs(subs, res_x_dest=640):
                     continue
 
             novo_valor = novo_valor.replace(','," ")
-            line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+            if substituicao_tipo01:
+                line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+            if substituicao_tipo02:
+                v = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:]
+                line.text = line.text.replace(v," " + novo_valor[:-1])
         except:
             continue
 
@@ -87,6 +97,7 @@ def resize_subs(subs, res_x_dest=640):
             busca_padrao = re.findall(r'move\((.+?)\)', line.text)
             if len(busca_padrao) == 0:
                 busca_padrao = re.findall(r'pos\((.+?)\)', line.text)
+                print(busca_padrao)
             if len(busca_padrao) == 0:
                 busca_padrao = re.findall(r'org\((.+?)\)', line.text)
 
@@ -94,8 +105,8 @@ def resize_subs(subs, res_x_dest=640):
 
             for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
                 novas_coordenadas = []
-                novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[0]) * escala)))
-                novas_coordenadas.append("{:.0f}".format(float(int(coordenadas[1]) * escala)))
+                novas_coordenadas.append("{:.0f}".format(float(coordenadas[0]) * escala))
+                novas_coordenadas.append("{:.0f}".format(float(coordenadas[1]) * escala))
                 lista_de_novas_cordenada = ','.join(novas_coordenadas)
                 antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
                 line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
