@@ -232,7 +232,7 @@ def resize_subs(subs, res_x_dest=640):
                 antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
             if len(busca_padrao) == 0:
                 substituicao_tipo02 = True
-                antigos_valores = busca_padrao = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:].split(" ")
+                antigos_valores = busca_padrao = line.text.split(re.findall(r'(?<=p[1-4]).*?(?=m)', line.text)[0])[1][2:].split(" ")
 
             novo_valor = ''
             for valor in antigos_valores:
@@ -246,7 +246,7 @@ def resize_subs(subs, res_x_dest=640):
             if substituicao_tipo01:
                 line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
             if substituicao_tipo02:
-                v = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:]
+                v = line.text.split(re.findall(r'(?<=p[1-4]).*?(?=m)', line.text)[0])[1][2:]
                 line.text = line.text.replace(v," " + novo_valor[:-1])
         except:
             continue
