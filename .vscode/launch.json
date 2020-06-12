@@ -11,14 +11,18 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "-m",
-                "tvmaze",
-                "-tvmaze",
-                "5196",
+                "-c",
+                "5130",
                 "-t",
-                "4",
+                "1",
+                // "-m",
+                // "tvmaze",
+                // "-tvmaze",
+                // "5196",
+                // "-t",
+                // "4",
                 "-d",
-                "/run/media/fagner/SeagateUSB/Animes/To Love-Ru Trouble (2008)/To LOVE-Ru Darkness 2nd"
+                "/run/media/fagner/Jogos & Backup/Animes/Não Organizados/[Moozzi2] Kuusen Madoushi Kouhosei no Kyouka - TV + OAD"
             ]
         }
     ]
