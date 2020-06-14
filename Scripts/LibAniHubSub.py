@@ -209,6 +209,20 @@ def resize_subs(subs, res_x_dest=640):
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
 
+    # for line in subs:
+    #     novos_valores = []
+    #     busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(p[1-4])\\(.+?)(?={)|(pos|move|org|clip)\((.+?)\)|fs([0-9]+.?[0-9]+)?',line)]
+
+    #     for padrao in busca_de_padroes:
+    #         if any(padrao[0] == y for y in ('pos','move','org','clip')):
+    #             for coordenadas in [padrao[1][i: i+2] for i in range(0, len(padrao[1]), 2)]:
+    #                 novas_coordenadas = []
+    #                 novas_coordenadas.append("{:.3f}".format(float(coordenadas[0]) * escala))
+    #                 novas_coordenadas.append("{:.3f}".format(float(coordenadas[1]) * escala))
+    #                 lista_de_novas_cordenada = ','.join(novas_coordenadas)
+    #                 antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
+    #                 novos_valores.append(novas_coordenadas)
+
     for line in subs:
         try:
             substituicao_tipo01 = substituicao_tipo02 = False
