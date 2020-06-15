@@ -19,7 +19,7 @@ fontes_legendas_otaku = {
     'Arial':'Roboto',
     'Comic Sans MS': 'Comic Neue',
     'Times New Roman':'Roboto Slab',
-    'Trebuchet MS': 'Allerta',
+    'Trebuchet MS': 'Fira Sans',
     'Verdana': 'Arimo'
 }
 
@@ -209,107 +209,15 @@ def resize_subs(subs, res_x_dest=640):
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
 
-    # for line in subs:
-    #     novos_valores = []
-    #     busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(p[1-4])\\(.+?)(?={)|(pos|move|org|clip)\((.+?)\)|fs([0-9]+.?[0-9]+)?',line)]
-
-    #     for padrao in busca_de_padroes:
-    #         if any(padrao[0] == y for y in ('pos','move','org','clip')):
-    #             for coordenadas in [padrao[1][i: i+2] for i in range(0, len(padrao[1]), 2)]:
-    #                 novas_coordenadas = []
-    #                 novas_coordenadas.append("{:.3f}".format(float(coordenadas[0]) * escala))
-    #                 novas_coordenadas.append("{:.3f}".format(float(coordenadas[1]) * escala))
-    #                 lista_de_novas_cordenada = ','.join(novas_coordenadas)
-    #                 antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
-    #                 novos_valores.append(novas_coordenadas)
-
+    n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace('.','').lstrip('-').isdigit() else v
+    j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
     for line in subs:
-        try:
-            substituicao_tipo01 = substituicao_tipo02 = False
-            busca_padrao = re.findall(r'(?<=p[1-4]).*?(?={)', line.text)
-            if len(busca_padrao) > 0:
-                substituicao_tipo01 = True
-                antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
-            if len(busca_padrao) == 0:
-                substituicao_tipo02 = True
-                antigos_valores = busca_padrao = line.text.split(re.findall(r'(?<=p[1-4]).*?(?=m)', line.text)[0])[1][2:].split(" ")
-
-            novo_valor = ''
-            for valor in antigos_valores:
-                try:
-                    novo_valor += str("{:.3f}".format(float(int(valor) * escala)) + ',')
-                except:
-                    novo_valor += valor + ','
-                    continue
-
-            novo_valor = novo_valor.replace(','," ")
-            if substituicao_tipo01:
-                line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
-            if substituicao_tipo02:
-                v = line.text.split(re.findall(r'(?<=p[1-4]).*?(?=m)', line.text)[0])[1][2:]
-                line.text = line.text.replace(v," " + novo_valor[:-1])
-        except:
-            continue
-
-    for line in subs:
-        try:
-            busca_padrao = re.findall(r'fs([0-9]+)', line.text)
-            if busca_padrao[0]:
-                antigas_coordenadas = busca_padrao[0]
-                novas_coordenadas = []
-                novas_coordenadas.append("{:.3f}".format(float(int(busca_padrao[0]) * escala)))
-                line.text = line.text.replace("fs" + antigas_coordenadas, "fs" + novas_coordenadas[0])
-        except:
-            continue
-
-    for line in subs:
-        try:
-            busca_padrao = re.findall(r'clip\((.+?)\)', line.text)
-
-            if busca_padrao[0][0] == 'm':
-                antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
-                novo_valor = ''
-                for valor in antigos_valores:
-                    try:
-                        novo_valor += str("{:.3f}".format(float(int(valor) * escala)) + ',')
-                    except:
-                        novo_valor += valor + ','
-                        continue
-                    novo_valor = novo_valor.replace(','," ")
-                line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
-            else:
-                busca_padrao = busca_padrao[0].split(',')
-
-                for coordenadas in [busca_padrao[i:i + 2] for i in range(0, len(busca_padrao), 2)]:
-                    novas_coordenadas = []
-                    novas_coordenadas.append("{:.3f}".format(float(coordenadas[0]) * escala))
-                    novas_coordenadas.append("{:.3f}".format(float(coordenadas[1]) * escala))
-                    lista_de_novas_cordenada = ','.join(novas_coordenadas)
-                    antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
-                    line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
-        except:
-            continue
-
-    for line in subs:
-        try:
-            busca_padrao = re.findall(r'move\((.+?)\)', line.text)
-            if len(busca_padrao) == 0:
-                busca_padrao = re.findall(r'pos\((.+?)\)', line.text)
-                # print(busca_padrao)
-            if len(busca_padrao) == 0:
-                busca_padrao = re.findall(r'org\((.+?)\)', line.text)
-
-            busca_padrao = busca_padrao[0].split(',')
-
-            for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
-                novas_coordenadas = []
-                novas_coordenadas.append("{:.3f}".format(float(coordenadas[0]) * escala))
-                novas_coordenadas.append("{:.3f}".format(float(coordenadas[1]) * escala))
-                lista_de_novas_cordenada = ','.join(novas_coordenadas)
-                antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
-                line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
-        except:
-            continue
+        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\}](m)(\s.+?)[\)|\{]|(pos|move|org|clip)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+        for padrao in busca_de_padroes:
+            try:
+                line.text = line.text.replace("".join(padrao),"".join(padrao[:-1]) + j(padrao))
+            except:
+                continue
 
 def tratamento_legendas_crunchroll(dir_trabalho=None, dir_legenda=None,dir_backup='Legendas Originais',extensao_legenda='.ass'):
     lista_de_fontes = open(dir_trabalho + '/' + 'listaDeFontes.txt', 'w+')
@@ -339,8 +247,8 @@ def tratamento_legendas_tvmaze(dir_trabalho=None, arquivos_de_legenda=None,dir_b
 def corrigi_estilos_crunchroll(subs):
     subs.info = {
         "Title": "[Legendas-Otaku] Português (Brasil)",
-        "PlayResX": 640,
-        "PlayResY": 360,
+        "PlayResX": subs.info["PlayResX"],
+        "PlayResY": subs.info["PlayResY"],
         "ScriptType": "v4.00+",
         "WrapStyle": "0"
     }

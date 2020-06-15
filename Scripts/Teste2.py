@@ -53,68 +53,128 @@ def resize_subs(subs, res_x_dest=640):
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
 
+    subs.info = {
+        "Title": "[Legendas-Otaku] Português (Brasil)",
+        "PlayResX": 640,
+        "PlayResY": 360,
+        "ScriptType": "v4.00+",
+        "WrapStyle": "0"
+    }
+
+    subs.aegisub_project = {}
+
+    n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace('.','').lstrip('-').isdigit() else v
+    j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
     for line in subs:
-        try:
-            substituicao_tipo01 = substituicao_tipo02 = False
-            busca_padrao = re.findall(r'(?<=p[1-4]).*?(?={)', line.text)
-            if len(busca_padrao) > 0:
-                substituicao_tipo01 = True
-                antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
-            if len(busca_padrao) == 0:
-                substituicao_tipo02 = True
-                antigos_valores = busca_padrao = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:].split(" ")
+        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\}](m)(\s.+?)[\)|\{]|(pos|move|org|clip)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+        for padrao in busca_de_padroes:
+            try:
+                line.text = line.text.replace("".join(padrao),"".join(padrao[:-1]) + j(padrao))
+            except:
+                continue
+    # n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace('.','').lstrip('-').isdigit() else v
+    # for line in subs:
+    #     try:
+    #         b_padroes = [tuple(i for i in m if i) for m in re.findall(r'(pos|move|org|clip)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+    #         for padrao in b_padroes:
+    #             line.text = line.text.replace("".join(padrao),"".join(padrao[:-1]) + ",".join([n(c) for c in re.split(r'[,\s]\s*', padrao[-1:][0])]))
 
-            novo_valor = ''
-            for valor in antigos_valores:
-                try:
-                    novo_valor += str("{:.0f}".format(float(int(valor) * escala)) + ',')
-                except:
-                    novo_valor += valor + ','
-                    continue
+    #         b2_padroes = [tuple(i for i in m if i) for m in re.findall(r'(p[1-4])(.*)?(m.+[0-9]+.+(?={))',line.text)]
+    #         for padrao in b2_padroes:
+    #             line.text = line.text.replace("".join(padrao),"".join(padrao[:-1]) + " ".join([n(c) for c in re.split(r'[,\s]\s*', padrao[-1:][0])]))
+    #     except:
+    #         continue
 
-            novo_valor = novo_valor.replace(','," ")
-            if substituicao_tipo01:
-                line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
-            if substituicao_tipo02:
-                v = line.text.split(re.findall('(?<=p1).*?(?=m)', line.text)[0])[1][2:]
-                line.text = line.text.replace(v," " + novo_valor[:-1])
-        except:
-            continue
+    #     try:
+    #         substituicao_tipo01 = substituicao_tipo02 = False
+    #         busca_padrao = re.findall(r'(?<=p[1-4]).*?(?={)', line.text)
+    #         if len(busca_padrao) > 0:
+    #             substituicao_tipo01 = True
+    #             antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+    #         if len(busca_padrao) == 0:
+    #             substituicao_tipo02 = True
+    #             antigos_valores = busca_padrao = line.text.split(re.findall(r'(?<=p[1-4]).*?(?=m)', line.text)[0])[1][2:].split(" ")
 
-    for line in subs:
-        try:
-            busca_padrao = re.findall(r'fs([0-9]+)', line.text)
-            if busca_padrao[0]:
-                antigas_coordenadas = busca_padrao[0]
-                novas_coordenadas = []
-                novas_coordenadas.append("{:.3f}".format(float(int(busca_padrao[0]) * escala)))
-                line.text = line.text.replace("fs" + antigas_coordenadas, "fs" + novas_coordenadas[0])
-        except:
-            continue
+    #         novo_valor = ''
+    #         for valor in antigos_valores:
+    #             try:
+    #                 novo_valor += str("{:.3f}".format(float(int(valor) * escala)) + ',')
+    #             except:
+    #                 novo_valor += valor + ','
+    #                 continue
 
-    for line in subs:
-        try:
-            busca_padrao = re.findall(r'move\((.+?)\)', line.text)
-            if len(busca_padrao) == 0:
-                busca_padrao = re.findall(r'pos\((.+?)\)', line.text)
-                print(busca_padrao)
-            if len(busca_padrao) == 0:
-                busca_padrao = re.findall(r'org\((.+?)\)', line.text)
+    #         novo_valor = novo_valor.replace(','," ")
+    #         if substituicao_tipo01:
+    #             line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+    #         if substituicao_tipo02:
+    #             v = line.text.split(re.findall(r'(?<=p[1-4]).*?(?=m)', line.text)[0])[1][2:]
+    #             line.text = line.text.replace(v," " + novo_valor[:-1])
+    #     except:
+    #         continue
 
-            busca_padrao = busca_padrao[0].split(',')
+    # for line in subs:
+    #     try:
+    #         busca_padrao = re.findall(r'fs([0-9]+)', line.text)
+    #         if busca_padrao[0]:
+    #             antigas_coordenadas = busca_padrao[0]
+    #             novas_coordenadas = []
+    #             novas_coordenadas.append("{:.3f}".format(float(int(busca_padrao[0]) * escala)))
+    #             line.text = line.text.replace("fs" + antigas_coordenadas, "fs" + novas_coordenadas[0])
+    #     except:
+    #         continue
 
-            for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
-                novas_coordenadas = []
-                novas_coordenadas.append("{:.0f}".format(float(coordenadas[0]) * escala))
-                novas_coordenadas.append("{:.0f}".format(float(coordenadas[1]) * escala))
-                lista_de_novas_cordenada = ','.join(novas_coordenadas)
-                antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
-                line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
-        except:
-            continue
+    # for line in subs:
+    #     try:
+    #         busca_padrao = re.findall(r'clip\((.+?)\)', line.text)
+
+    #         if busca_padrao[0][0] == 'm':
+    #             antigos_valores = busca_padrao[0].split('m')[1].split(" ")[1:]
+    #             novo_valor = ''
+    #             for valor in antigos_valores:
+    #                 try:
+    #                     novo_valor += str("{:.3f}".format(float(int(valor) * escala)) + ',')
+    #                 except:
+    #                     novo_valor += valor + ','
+    #                     continue
+    #                 novo_valor = novo_valor.replace(','," ")
+    #             line.text = line.text.replace(busca_padrao[0].split('m')[1]," " + novo_valor[:-1])
+    #         else:
+    #             busca_padrao = busca_padrao[0].split(',')
+
+    #             for coordenadas in [busca_padrao[i:i + 2] for i in range(0, len(busca_padrao), 2)]:
+    #                 novas_coordenadas = []
+    #                 novas_coordenadas.append("{:.3f}".format(float(coordenadas[0]) * escala))
+    #                 novas_coordenadas.append("{:.3f}".format(float(coordenadas[1]) * escala))
+    #                 lista_de_novas_cordenada = ','.join(novas_coordenadas)
+    #                 antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
+    #                 line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
+    #     except:
+    #         continue
+
+    # for line in subs:
+    #     try:
+    #         busca_padrao = re.findall(r'move\((.+?)\)', line.text)
+    #         if len(busca_padrao) == 0:
+    #             busca_padrao = re.findall(r'pos\((.+?)\)', line.text)
+    #             # print(busca_padrao)
+    #         if len(busca_padrao) == 0:
+    #             busca_padrao = re.findall(r'org\((.+?)\)', line.text)
+
+    #         busca_padrao = busca_padrao[0].split(',')
+
+    #         for coordenadas in [busca_padrao[i: i+2] for i in range(0, len(busca_padrao), 2)]:
+    #             novas_coordenadas = []
+    #             novas_coordenadas.append("{:.3f}".format(float(coordenadas[0]) * escala))
+    #             novas_coordenadas.append("{:.3f}".format(float(coordenadas[1]) * escala))
+    #             lista_de_novas_cordenada = ','.join(novas_coordenadas)
+    #             antigas_coordenadas = coordenadas[0] + ',' + coordenadas[1]
+    #             line.text = line.text.replace(antigas_coordenadas, lista_de_novas_cordenada)
+    #     except:
+    #         continue
 
 
-dir_trabalho = '/run/media/fagner/Jogos & Backup/Animes/Não Organizados/[FAL] To Love-Ru BD/DesenScript'
+
+dir_trabalho = '/home/fagner/ProjetosVSCode/ScriptsLegendas/Scripts/sampletest'
 
 arq_dir_trabalho = os.listdir(dir_trabalho)
 dir_bak_leg(dir_trabalho, arq_dir_trabalho)
