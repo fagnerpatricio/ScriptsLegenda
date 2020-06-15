@@ -19,7 +19,7 @@ fontes_legendas_otaku = {
     'Arial':'Roboto',
     'Comic Sans MS': 'Comic Neue',
     'Times New Roman':'Roboto Slab',
-    'Trebuchet MS': 'Fira Sans',
+    'Trebuchet MS': 'Merriweather Sans',
     'Verdana': 'Arimo'
 }
 
@@ -146,7 +146,6 @@ def trocar_caractere(texto):
     }
 
     return "".join([replacements.get(c, c) for c in texto])
-
 
 def exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
     print(
