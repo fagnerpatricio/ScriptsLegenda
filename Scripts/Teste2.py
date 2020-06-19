@@ -67,6 +67,7 @@ def resize_subs(subs, res_x_dest=640):
     j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
     for line in subs:
         busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip)(\()((?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)(?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)?)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+        # (move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})
         for padrao in busca_de_padroes:
             try:
                 line.text = line.text.replace("".join(padrao),"".join(padrao[:-1]) + j(padrao))

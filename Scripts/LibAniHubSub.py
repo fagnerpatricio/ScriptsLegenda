@@ -211,7 +211,8 @@ def resize_subs(subs, res_x_dest=640):
     n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace('.','').lstrip('-').isdigit() else v
     j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
     for line in subs:
-        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\|\,}](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+        # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\|\,}](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip)(\()((?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)(?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)?)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
         for padrao in busca_de_padroes:
             try:
                 line.text = line.text.replace("".join(padrao),"".join(padrao[:-1]) + j(padrao))
