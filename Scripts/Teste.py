@@ -5,7 +5,7 @@ import re
 print(font_manager.findfont('ComicNeue'))
 
 lines = [
-   r'Dialogue: 0,0:01:31.50,0:01:33.94,Signs,,0,0,0,,{\fad(510,0)\an7\blur0.5\fs21.500\3c&H9B3FAB&\fnImpress BT\bord0.1\b1\p1\fscx80\fscy80\c&HA43973&\pos(-20,176)}m 48 162 b 48 162 48 162 48 162 b 48 162 48 162 48 162 b 58 143 72 134 90 136 b 76 148 88 159 96 157 b 88 160 86 164 86 171 b 83 164 76 164 71 174 b 75 152 65 152 48 162  {\p0}'
+   r'Dialogue: 0,0:15:39.58,0:15:47.25,Signs,,0,0,0,,{=77=127}{\clip()\t(25,7657,\clip())\move(500,-56.065,500.265,384.710,25,7657)\fscx60\fscy60\frz9.292\fax-0.05\fnKG Red Hands\blur5\alpha&HB0&\c&HF9F9F7&\b1}Oclip(648,768,1277,771)\pos(320,275){\clip(m 460 118 l 609 118 609 118 460 118)\pos(535,137)'
 ]
 # lines = [
 #     '0,0:01:09.50,0:01:12.38,Logo,,0,0,0,,{\clip(m 460 118 l 609 118 609 118 460 118)\pos(535,137)\bord3\shad0\blur1.5\fnSubway\fs19.667\c&HF5C110&\3c&HFFFFFF&\alpha&HFF&\t(0,253,1,\alpha&H00&)}Infinite Fansub',
@@ -28,12 +28,15 @@ for line in lines:
         # novos_valores = []
         # print(type(line))
         # t = re.findall(r'(?P<tag>(fs|clip))+',line)
-        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\}](m)(\s.+?)[\)|\{]|(pos|move|org|clip)(\()(.+?)\)|(fs)(\d+\.?\d+)',line)]
+        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move)(\()(-?\d+.?\d+,-?\d+.?\d+,-?\d+.?\d+,-?\d+.?\d+)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line)]
 
+        t = lambda z: z if len(z) < 4 else z[:4]
         n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace('.','').lstrip('-').isdigit() else v
-        j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
+        j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]) if x[0] == 'm' else ",".join([n(c) for c in t(re.split(r'[,\s]\s*', x[-1:][0]))])
+        # j2 = lambda x: "".join(x[:-1] + ",".join(t(re.split(r'[,\s]\s*', x[-1:][0])))) if x[0] == 'move' else x
         for padrao in busca_de_padroes:
             try:
+                # padrao = padrao[:-1] + (",".join(t(re.split(r'[,\s]\s*', padrao[-1:][0]))),)
                 line = line.replace("".join(padrao),"".join(padrao[:-1]) + j(padrao))
                 # line = line.replace("".join(padrao),"".join(padrao[:-1]) + " ".join([n(c) for c in re.split(r'[,\s]\s*', padrao[-1:][0])]))
                 # if any(padrao[0] == y for y in ('pos','move','org')):
