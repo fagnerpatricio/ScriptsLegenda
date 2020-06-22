@@ -5,7 +5,7 @@ import re
 print(font_manager.findfont('ComicNeue'))
 
 lines = [
-   r'Dialogue: 0,0:15:39.58,0:15:47.25,Signs,,0,0,0,,{=77=127}{\clip()\t(25,7657,\clip())\move(500,-56.065,500.265,384.710,25,7657)\fscx60\fscy60\frz9.292\fax-0.05\fnKG Red Hands\blur5\alpha&HB0&\c&HF9F9F7&\b1}Oclip(648,768,1277,771)\pos(320,275){\clip(m 460 118 l 609 118 609 118 460 118)\pos(535,137)'
+   r'{=478}{\1a&H00&\an7\pos(0.04,384.25)\fscx100\fscy100\p1\c&HC1D6E9&\blur3\be1}m 827 595 l 890 606 918 611 953 618 945 648 912 654 862 636 842 627 820 610'
 ]
 # lines = [
 #     '0,0:01:09.50,0:01:12.38,Logo,,0,0,0,,{\clip(m 460 118 l 609 118 609 118 460 118)\pos(535,137)\bord3\shad0\blur1.5\fnSubway\fs19.667\c&HF5C110&\3c&HFFFFFF&\alpha&HFF&\t(0,253,1,\alpha&H00&)}Infinite Fansub',
@@ -28,7 +28,7 @@ for line in lines:
         # novos_valores = []
         # print(type(line))
         # t = re.findall(r'(?P<tag>(fs|clip))+',line)
-        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move)(\()(-?\d+.?\d+,-?\d+.?\d+,-?\d+.?\d+,-?\d+.?\d+)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line)]
+        busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})|[\\|\(|\}|\,](m)(\s.+?)[\{|\)|\n]',line)]
 
         t = lambda z: z if len(z) < 4 else z[:4]
         n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace('.','').lstrip('-').isdigit() else v

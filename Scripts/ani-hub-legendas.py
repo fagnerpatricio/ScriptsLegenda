@@ -22,8 +22,7 @@ if __name__ == "__main__":
         argumentos = parser.parse_args()
         LibAniHubSub.dir_bak_leg(argumentos.dir_trabalho, os.listdir(argumentos.dir_trabalho))
         dir_c_leg = os.listdir(argumentos.dir_trabalho + '/' + LibAniHubSub.CONFIG["dirLegendaAntiga"])
-        LibAniHubSub.tratamento_legendas_crunchroll(dir_trabalho=argumentos.dir_trabalho,dir_legenda=dir_c_leg)
-        # LibAniHubSub.renomeia_crunchroll(dir_trabalho=argumentos.dir_trabalho)
+        LibAniHubSub.tratamento_legendas_tvmaze(dir_trabalho=argumentos.dir_trabalho,arquivos_de_legenda=dir_c_leg)
         print('SUCESSO :DDDD')
     except:
         print('ALGO DEU ERRADO :((((')

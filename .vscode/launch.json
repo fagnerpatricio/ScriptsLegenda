@@ -11,10 +11,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "-c",
-                "5130",
-                "-t",
-                "1",
+                // "-c",
+                // "5130",
+                // "-t",
+                // "1",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
@@ -22,7 +22,7 @@
                 // "-t",
                 // "4",
                 "-d",
-                "/run/media/fagner/Jogos & Backup/Animes/Não Organizados/[Moozzi2] Kuusen Madoushi Kouhosei no Kyouka - TV + OAD"
+                "/home/fagner/Vídeos/sampletest"
             ]
         }
     ]
