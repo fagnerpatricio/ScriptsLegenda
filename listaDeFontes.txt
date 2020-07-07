@@ -25,5 +25,13 @@ Fonte: --> Monteros
 Fonte: --> Candara
 Fonte: --> Merriweather Sans
 Fonte: --> Merriweather Sans
+Fonte: --> creation
+Fonte: --> creation
+Fonte: --> Merriweather Sans
+Fonte: --> Merriweather Sans
 Fonte: --> Afterglow
 Fonte: --> Afterglow
+Fonte: --> Merriweather Sans
+Fonte: --> Merriweather Sans
+Fonte: --> Monteros
+Fonte: --> Monteros
