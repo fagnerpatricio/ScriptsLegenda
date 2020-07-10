@@ -11,18 +11,24 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                // "-c",
-                // "5130",
-                // "-t",
-                // "1",
+                "-c",
+                "20874",
+                "-t",
+                "2",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
                 // "5196",
                 // "-t",
                 // "4",
+                // "-rx",
+                // "480",
+                // "-ry",
+                // "360",
+                "-e",
+                ".mkv",
                 "-d",
-                "/home/fagner/Vídeos/sampletest"
+                "/media/fagner/Jogos & Backup/Animes/Não Organizados/[ReinForce] D.C. ~Da Capo~ (BDRip 1280x720 x264 FLAC)/"
             ]
         }
     ]

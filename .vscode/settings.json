@@ -23,5 +23,4 @@
     ],
     "editor.wordWrapColumn": 160,
     "editor.wordWrap": "wordWrapColumn",
-    "python.pythonPath": "venv/bin/python",
 }
