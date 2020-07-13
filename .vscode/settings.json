@@ -1,5 +1,8 @@
 {
-    "python.formatting.provider": "yapf",
+    "python.formatting.provider": "autopep8",
+    "python.formatting.autopep8Args": [
+        "--max-line-length=150"
+    ]
     "editor.formatOnSave": false,
     "editor.autoIndent": "advanced",
     "editor.detectIndentation": true,
@@ -23,4 +26,14 @@
     ],
     "editor.wordWrapColumn": 160,
     "editor.wordWrap": "wordWrapColumn",
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "string.quoted.docstring.multi.python",
+                "settings": {
+                    "foreground": "#fffb00"
+                }
+            }
+        ]
+    },
 }

@@ -11,24 +11,26 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "-c",
-                "12628",
-                "-t",
-                "1",
+                // "-c",
+                // "12628",
+                // "-t",
+                // "1",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
                 // "5196",
                 // "-t",
                 // "4",
-                "-rx",
-                "480",
-                "-ry",
-                "360",
+                // "-rx",
+                // "480",
+                // "-ry",
+                // "360",
                 // "-e",
                 // ".mkv",
+                "-si=32",
+                "-des=9900",
                 "-d",
-                "/media/Multimedia/Animes/Kiss X Sis/Kiss X Sis/"
+                "/home/fagner/Vídeos/Banco De Testes Para Legendas/Resync Legendas/"
             ]
         }
     ]

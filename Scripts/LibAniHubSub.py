@@ -103,11 +103,11 @@ def exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
             list(ele) for ele in zip(lista_de_nomes_de_episodios, dir_legendas,
                                      dir_episodios)
         ],
-                 headers=[
-                     'Novo Nome Dos Arquivos', 'Arquivos de Legendas',
-                     'Arquivo de Vídeo'
-                 ],
-                 tablefmt="fancy_grid"))
+            headers=[
+            'Novo Nome Dos Arquivos', 'Arquivos de Legendas',
+            'Arquivo de Vídeo'
+        ],
+            tablefmt="fancy_grid"))
 
 
 def renomeia_arquivos(dir_trabalho,
@@ -188,9 +188,10 @@ def resize_subs(subs, res_x_dest=640):
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
 
-    n = lambda v: str("{:.3f}".format(float(v) * escala)) if v.replace(
+    def n(v): return str("{:.3f}".format(float(v) * escala)) if v.replace(
         '.', '').lstrip('-').isdigit() else v
-    j = lambda x: " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][
+
+    def j(x): return " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][
         0])]) if x[0] == 'm' else ",".join(
             [n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
     for line in subs:
@@ -282,7 +283,7 @@ def corrigi_estilos_crunchroll(subs):
     subs.aegisub_project = {}
     lista_com_contadores_de_estilos = {}
 
-    #Verifica se um Stylo está sendo usado
+    # Verifica se um Stylo está sendo usado
     for nome_estilo, estilo in zip(subs.styles.keys(), subs.styles.values()):
         contador = 0
         for line in subs:
@@ -315,8 +316,8 @@ def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
 
     lista_com_contadores_de_estilos = {}
 
-    altera_elementos = lambda x, y: x if x else y
-    altera_cor = lambda x, y: pysubs2.Color(*x) if True else y
+    def altera_elementos(x, y): return x if x else y
+    def altera_cor(x, y): return pysubs2.Color(*x) if True else y
 
     for nome_estilo, estilo in zip(subs.styles.keys(), subs.styles.values()):
         for atributo in frozenset(estilo.FIELDS):
@@ -340,7 +341,7 @@ def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
         except:
             continue
 
-        #Verifica se um Stylo está sendo usado
+        # Verifica se um Stylo está sendo usado
         contador = 0
         for line in subs:
             if nome_estilo == line.style:
@@ -376,7 +377,7 @@ def renomeia_crunchroll(dir_trabalho):
     lista_de_nomes_de_episodios = natsort.natsorted(
         lista_de_nomes_de_episodios, reverse=False)
 
-    #Exibe prévia
+    # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
 
     input('Aperte \'Enter\' para contirnuar:')
@@ -407,7 +408,7 @@ def renomeia_tvmaze(dir_trabalho,
             lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) +
                                                ' - ' + episodio["name"])
 
-    #Exibe prévia
+    # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
 
     input('Aperte \'Enter\' para contirnuar:')
@@ -441,7 +442,7 @@ def renomeia_anidb(dir_trabalho, lista_de_episodios_anidb):
                 except:
                     continue
 
-    #Exibe prévia
+    # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
 
     input('Aperte \'Enter\' para contirnuar:')
@@ -468,20 +469,17 @@ def renomeia_apenas_tvmaze(dir_trabalho,
 
     # Criar Lista de nomes de Episódios
     for episodio in lista_de_episodios_tvmaze:
-        if episodio["number"] != None and episodio[
-                "season"] == temporada_episodios:
-            lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) +
-                                               ' - ' + episodio["name"])
+        if episodio["number"] != None and episodio["season"] == temporada_episodios:
+            lista_de_nomes_de_episodios.append(
+                "#" + str(episodio["number"]) + ' - ' + episodio["name"])
 
-    #Exibe prévia
+    # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_arquivos, dir_arquivos)
 
     input('Aperte \'Enter\' para contirnuar:')
 
-    renomeia_arquivos_01(
-        dir_trabalho=dir_trabalho,
-        lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
-        dir_arquivos=dir_arquivos)
+    renomeia_arquivos_01(dir_trabalho=dir_trabalho,
+                         lista_de_nomes_de_episodios=lista_de_nomes_de_episodios, dir_arquivos=dir_arquivos)
 
 
 def baixa_tvmaze_legendas(codigo=None):
@@ -496,3 +494,29 @@ def baixa_anidb_legendas(client=None, clientver=None, codigo=None):
             + codigo,
             verify=True).content)
     return raiz
+
+
+'''
+
+    Funções Relacionadas a Sincroninações de Tempo
+
+'''
+
+
+def desloca_subs(subs, h=0, m=0, s=0, delta_deslocamento=0):
+    tempo_inicial = (h * 3600000) + (m * 60000) + (s * 1000)
+    delta_deslocamento = 89999
+
+    for line in subs:
+        if line.start > tempo_inicial:
+            line.start += delta_deslocamento
+            line.end += delta_deslocamento
+
+
+def resincroniza_legendas(dir_trabalho, extensao_legenda='.ass', h=0, m=0, s=0, delta_deslocamento=0):
+    arq_dir_trabalho = os.listdir(dir_trabalho)
+    for arquivo_de_legenda in arq_dir_trabalho:
+        if arquivo_de_legenda.endswith(extensao_legenda):
+            subs = pysubs2.load(dir_trabalho + '/' + arquivo_de_legenda , encoding="utf-8")
+            desloca_subs(subs,h,m,s,delta_deslocamento)
+            subs.save(dir_trabalho + '/' + arquivo_de_legenda)
