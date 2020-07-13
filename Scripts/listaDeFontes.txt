@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Fonte: --> Lucida Casual
 Fonte: --> Station
 Fonte: --> Station
@@ -108,3 +109,53 @@ Fonte: --> Lucida Casual
 Fonte: --> Lucida Sans Unicode
 Fonte: --> Lucida Casual
 Fonte: --> Merriweather Sans
+=======
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+Fonte: --> Merriweather Sans
+Fonte: --> Segoe Print
+Fonte: --> Niobium
+Fonte: --> Gill Sans MT Ext Condensed Bold
+>>>>>>> a230ec3ba092083263f7bd26102b02f90b8e9c1d

@@ -35,6 +35,7 @@ Fonte: --> Segoe Print
 Fonte: --> Niobium
 Fonte: --> Gill Sans MT Ext Condensed Bold
 Fonte: --> Merriweather Sans
+<<<<<<< HEAD
 Fonte: --> Segoe Print
 Fonte: --> Niobium
 Fonte: --> Gill Sans MT Ext Condensed Bold
@@ -46,3 +47,15 @@ Fonte: --> Merriweather Sans
 Fonte: --> Segoe Print
 Fonte: --> Niobium
 Fonte: --> Gill Sans MT Ext Condensed Bold
+=======
+Fonte: --> creation
+Fonte: --> creation
+Fonte: --> Merriweather Sans
+Fonte: --> Merriweather Sans
+Fonte: --> Afterglow
+Fonte: --> Afterglow
+Fonte: --> Merriweather Sans
+Fonte: --> Merriweather Sans
+Fonte: --> Monteros
+Fonte: --> Monteros
+>>>>>>> a230ec3ba092083263f7bd26102b02f90b8e9c1d
