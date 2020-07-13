@@ -200,7 +200,8 @@ def resize_subs(subs, res_x_dest=640):
         # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})|[\\|\(|\}|\,](m)(\s.+\d)[\(|\{]?',line.text)]
         busca_de_padroes = [
             tuple(i for i in m if i) for m in re.findall(
-                r'(move|clip|pos|org|fs)(\()?(0?,?(?:\-?\d+\,?\.?\d+\,?){1,4})|(m)(\s[^\{\)\n]+)',
+                # r'(move|clip|pos|org|fs)(\()?(0?,?(?:\-?\d+\,?\.?\d+\,?){1,4})|(m)(\s[^\{\)\n]+)',
+                r'(move|clip|pos|org)(\()(-?(?:\d+(?:\.\d*)?|\.\d+)(?:,-?(?:\d+(?:\.\d*)?|\.\d+)){0,3})|}(m)(\s[^\{\)\n]+)|(fs)(\d+\.?\d+)',
                 line.text)
         ]
         for padrao in busca_de_padroes:

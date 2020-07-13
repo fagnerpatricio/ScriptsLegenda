@@ -12,23 +12,23 @@
             "console": "integratedTerminal",
             "args": [
                 "-c",
-                "20874",
+                "12628",
                 "-t",
-                "2",
+                "1",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
                 // "5196",
                 // "-t",
                 // "4",
-                // "-rx",
-                // "480",
-                // "-ry",
-                // "360",
-                "-e",
-                ".mkv",
+                "-rx",
+                "480",
+                "-ry",
+                "360",
+                // "-e",
+                // ".mkv",
                 "-d",
-                "/media/fagner/Jogos & Backup/Animes/Não Organizados/[ReinForce] D.C. ~Da Capo~ (BDRip 1280x720 x264 FLAC)/"
+                "/media/Multimedia/Animes/Kiss X Sis/Kiss X Sis/"
             ]
         }
     ]
