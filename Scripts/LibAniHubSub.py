@@ -99,59 +99,36 @@ def trocar_caractere(texto):
 
 def exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
     print(
-        tabulate([
-            list(ele) for ele in zip(lista_de_nomes_de_episodios, dir_legendas,
-                                     dir_episodios)
-        ],
-            headers=[
-            'Novo Nome Dos Arquivos', 'Arquivos de Legendas',
-            'Arquivo de Vídeo'
-        ],
-            tablefmt="fancy_grid"))
+        tabulate(
+            [list(ele) for ele in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)],
+            headers=['Novo Nome Dos Arquivos', 'Arquivos de Legendas', 'Arquivo de Vídeo'],
+            tablefmt="fancy_grid"
+        )
+    )
 
 
-def renomeia_arquivos(dir_trabalho,
-                      lista_de_nomes_de_episodios,
-                      dir_legendas,
-                      dir_episodios,
-                      extensao_legendas='.ass',
-                      extensao_video='.mkv'):
-    for nn_episodio, tn_leg, tn_ep in zip(lista_de_nomes_de_episodios,
-                                          dir_legendas, dir_episodios):
-        # Renomeando os arquivos
-        shutil.move(
-            dir_trabalho + '/' + tn_leg, dir_trabalho + '/' +
-            trocar_caractere(nn_episodio.rstrip()) + extensao_legendas)
-        shutil.move(
-            dir_trabalho + '/' + tn_ep, dir_trabalho + '/' +
-            trocar_caractere(nn_episodio.rstrip()) + extensao_video)
+def renomeia_arquivos(dir_trabalho, lista_de_nomes_de_episodios, dir_legendas, dir_episodios, extensao_legendas='.ass', extensao_video='.mkv'):
+    # Renomeando os arquivos
+    for nn_episodio, tn_leg, tn_ep in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
+        shutil.move(dir_trabalho + '/' + tn_leg, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao_legendas)
+        shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao_video)
 
 
-def renomeia_arquivos_01(dir_trabalho,
-                         lista_de_nomes_de_episodios,
-                         dir_arquivos,
-                         extensao='.mkv'):
+def renomeia_arquivos_01(dir_trabalho, lista_de_nomes_de_episodios, dir_arquivos, extensao='.mkv'):
+    # Renomeando os arquivos
     for nn_episodio, tn_ep in zip(lista_de_nomes_de_episodios, dir_arquivos):
-        # Renomeando os arquivos
-        shutil.move(
-            dir_trabalho + '/' + tn_ep, dir_trabalho + '/' +
-            trocar_caractere(nn_episodio.rstrip()) + extensao)
+        shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao)
 
 
-def dir_bak_leg(dir_trabalho=None,
-                arquivos_de_legenda=None,
-                dir_backup='Legendas Originais',
-                extensao_legenda='.ass'):
+def dir_bak_leg(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass'):
     # Criando o Diretório onde ficaram as legendas originais da Crunchroll
     try:
         original_umask = os.umask(0)
         os.mkdir(dir_trabalho + '/' + dir_backup)
     except OSError:
-        print("Falha na cricao do diretorio porque ele ja existe" +
-              dir_trabalho + '/' + dir_backup)
+        print("Falha na cricao do diretorio porque ele ja existe" + dir_trabalho + '/' + dir_backup)
     else:
-        print("Successfully created the directory %s " + dir_trabalho + '/' +
-              dir_backup)
+        print("Successfully created the directory %s " + dir_trabalho + '/' + dir_backup)
     finally:
         os.umask(original_umask)
 
@@ -159,8 +136,7 @@ def dir_bak_leg(dir_trabalho=None,
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
             try:
-                shutil.move(dir_trabalho + '/' + arquivo_de_legenda,
-                            dir_trabalho + '/' + dir_backup)
+                shutil.move(dir_trabalho + '/' + arquivo_de_legenda, dir_trabalho + '/' + dir_backup)
             except OSError:
                 print("Arquivo já existe no destino" + arquivo_de_legenda)
 
@@ -168,8 +144,7 @@ def dir_bak_leg(dir_trabalho=None,
 def cheque_fontes_instaladas(subs, arquivo):
     for style in subs.styles.values():
         if ntpath.basename(
-                font_manager.findfont(style.fontname.replace(
-                    '-', " "))) == 'DejaVuSans.ttf':
+                font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
             arquivo.write("Fonte: --> " + style.fontname + '\n')
 
 
@@ -188,12 +163,11 @@ def resize_subs(subs, res_x_dest=640):
         style.shadow = int(style.shadow * escala)
         style.spacing = int(style.spacing * escala)
 
-    def n(v): return str("{:.3f}".format(float(v) * escala)) if v.replace(
-        '.', '').lstrip('-').isdigit() else v
+    def n(v): return str("{:.3f}".format(float(v) * escala)) if v.replace('.', '').lstrip('-').isdigit() else v
 
-    def j(x): return " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][
-        0])]) if x[0] == 'm' else ",".join(
-            [n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
+    def j(x): return " ".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])]
+                              ) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
+
     for line in subs:
         # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\|\,}](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
         # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip)(\()((?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)(?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)?)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
@@ -207,23 +181,17 @@ def resize_subs(subs, res_x_dest=640):
         ]
         for padrao in busca_de_padroes:
             try:
-                line.text = line.text.replace("".join(padrao),
-                                              "".join(padrao[:-1]) + j(padrao))
+                line.text = line.text.replace("".join(padrao), "".join(padrao[:-1]) + j(padrao))
             except:
                 continue
 
 
-def tratamento_legendas_crunchroll(dir_trabalho=None,
-                                   dir_legenda=None,
-                                   dir_backup='Legendas Originais',
-                                   extensao_legenda='.ass'):
+def tratamento_legendas_crunchroll(dir_trabalho=None, dir_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass'):
     lista_de_fontes = open(dir_trabalho + '/' + 'listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in dir_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
-            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' +
-                                arquivo_de_legenda,
-                                encoding="utf-8")
+            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             corrigi_estilos_crunchroll(subs)
             cheque_fontes_instaladas(subs, lista_de_fontes)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
@@ -231,19 +199,12 @@ def tratamento_legendas_crunchroll(dir_trabalho=None,
     lista_de_fontes.close()
 
 
-def tratamento_legendas_tvmaze(dir_trabalho=None,
-                               arquivos_de_legenda=None,
-                               dir_backup='Legendas Originais',
-                               extensao_legenda='.ass',
-                               res_x=640,
-                               res_y=360):
+def tratamento_legendas_tvmaze(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass', res_x=640, res_y=360):
     lista_de_fontes = open('listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
-            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' +
-                                arquivo_de_legenda,
-                                encoding="utf-8")
+            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             resize_subs(subs, res_x_dest=res_x)
             corrigi_estilos_tvmaze(subs, res_x=res_x)
             cheque_fontes_instaladas(subs, lista_de_fontes)
@@ -252,17 +213,12 @@ def tratamento_legendas_tvmaze(dir_trabalho=None,
     lista_de_fontes.close()
 
 
-def tratamento_legendas_anidb(dir_trabalho=None,
-                              arquivos_de_legenda=None,
-                              dir_backup='Legendas Originais',
-                              extensao_legenda='.ass'):
+def tratamento_legendas_anidb(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass'):
     lista_de_fontes = open('listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
-            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' +
-                                arquivo_de_legenda,
-                                encoding="utf-8")
+            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             resize_subs(subs)
             corrigi_estilos_tvmaze(subs)
             cheque_fontes_instaladas(subs, lista_de_fontes)
@@ -322,17 +278,10 @@ def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
     for nome_estilo, estilo in zip(subs.styles.keys(), subs.styles.values()):
         for atributo in frozenset(estilo.FIELDS):
             try:
-                if any(x == atributo for x in [
-                        "backcolor", "outlinecolor", "secondarycolor",
-                        "primarycolor"
-                ]):
-                    vars(estilo)[atributo] = altera_cor(
-                        CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo],
-                        vars(estilo)[atributo])
+                if any(x == atributo for x in ["backcolor", "outlinecolor", "secondarycolor", "primarycolor"]):
+                    vars(estilo)[atributo] = altera_cor(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo], vars(estilo)[atributo])
                 else:
-                    vars(estilo)[atributo] = altera_elementos(
-                        CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo],
-                        vars(estilo)[atributo])
+                    vars(estilo)[atributo] = altera_elementos(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo], vars(estilo)[atributo])
             except:
                 continue
 
@@ -357,10 +306,7 @@ def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
 
 def renomeia_crunchroll(dir_trabalho):
     # LerAquivos
-    dir_episodios = [
-        x for x in os.listdir(dir_trabalho)
-        if (x.endswith(".mp4") or x.endswith(".mkv"))
-    ]
+    dir_episodios = [x for x in os.listdir(dir_trabalho) if (x.endswith(".mp4") or x.endswith(".mkv"))]
     dir_legendas = [x for x in os.listdir(dir_trabalho) if x.endswith(".ass")]
 
     # Ordena Nomes
@@ -369,28 +315,19 @@ def renomeia_crunchroll(dir_trabalho):
 
     # Criar Lista de nomes de Episódios
     lista_de_nomes_de_episodios = []
-    lista_de_nomes_de_episodios = [
-        '#' +
-        os.path.splitext(x.split('Episódio ')[1])[0].replace(".ptBR", "")
-        for x in dir_legendas
-    ]
-    lista_de_nomes_de_episodios = natsort.natsorted(
-        lista_de_nomes_de_episodios, reverse=False)
+    lista_de_nomes_de_episodios = ['#' + os.path.splitext(x.split('Episódio ')[1])[0].replace(".ptBR", "") for x in dir_legendas]
+    lista_de_nomes_de_episodios = natsort.natsorted(lista_de_nomes_de_episodios, reverse=False)
 
     # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
 
     input('Aperte \'Enter\' para contirnuar:')
 
-    renomeia_arquivos(dir_trabalho=dir_trabalho,
-                      lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
-                      dir_legendas=dir_legendas,
-                      dir_episodios=dir_episodios)
+    renomeia_arquivos(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
+                      dir_legendas=dir_legendas, dir_episodios=dir_episodios)
 
 
-def renomeia_tvmaze(dir_trabalho,
-                    lista_de_episodios_tvmaze,
-                    temporada_episodios=1):
+def renomeia_tvmaze(dir_trabalho, lista_de_episodios_tvmaze, temporada_episodios=1):
     # LerAquivos
     dir_episodios = [x for x in os.listdir(dir_trabalho) if x.endswith(".mkv")]
     dir_legendas = [x for x in os.listdir(dir_trabalho) if x.endswith(".ass")]
@@ -403,20 +340,15 @@ def renomeia_tvmaze(dir_trabalho,
 
     # Criar Lista de nomes de Episódios
     for episodio in lista_de_episodios_tvmaze:
-        if episodio["number"] != None and episodio[
-                "season"] == temporada_episodios:
-            lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) +
-                                               ' - ' + episodio["name"])
-
+        if episodio["number"] != None and episodio["season"] == temporada_episodios:
+            lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
     # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
 
     input('Aperte \'Enter\' para contirnuar:')
 
-    renomeia_arquivos(dir_trabalho=dir_trabalho,
-                      lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
-                      dir_legendas=dir_legendas,
-                      dir_episodios=dir_episodios)
+    renomeia_arquivos(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
+                      dir_legendas=dir_legendas, dir_episodios=dir_episodios)
 
 
 def renomeia_anidb(dir_trabalho, lista_de_episodios_anidb):
@@ -433,12 +365,9 @@ def renomeia_anidb(dir_trabalho, lista_de_episodios_anidb):
     # Criar Lista de nomes de Episódios
     for episodio in lista_de_episodios_anidb.iter("episode"):
         for titulo in episodio.findall('title'):
-            if titulo.attrib[
-                    '{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
+            if titulo.attrib['{http://www.w3.org/XML/1998/namespace}lang'] == 'en':
                 try:
-                    lista_de_nomes_de_episodios.append(
-                        '#' + str(int(episodio.find("epno").text)) + ' - ' +
-                        titulo.text)
+                    lista_de_nomes_de_episodios.append('#' + str(int(episodio.find("epno").text)) + ' - ' + titulo.text)
                 except:
                     continue
 
@@ -447,21 +376,13 @@ def renomeia_anidb(dir_trabalho, lista_de_episodios_anidb):
 
     input('Aperte \'Enter\' para contirnuar:')
 
-    renomeia_arquivos(dir_trabalho=dir_trabalho,
-                      lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
-                      dir_legendas=dir_legendas,
-                      dir_episodios=dir_episodios)
+    renomeia_arquivos(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
+                      dir_legendas=dir_legendas, dir_episodios=dir_episodios)
 
 
-def renomeia_apenas_tvmaze(dir_trabalho,
-                           lista_de_episodios_tvmaze,
-                           extensao='.mkv',
-                           temporada_episodios=1):
+def renomeia_apenas_tvmaze(dir_trabalho, lista_de_episodios_tvmaze, extensao='.mkv', temporada_episodios=1):
     # LerAquivos
-    dir_arquivos = [
-        x for x in os.listdir(dir_trabalho) if x.endswith(extensao)
-    ]
-
+    dir_arquivos = [x for x in os.listdir(dir_trabalho) if x.endswith(extensao)]
     # Ordena Nomes
     dir_arquivos = natsort.natsorted(dir_arquivos, reverse=False)
 
@@ -470,42 +391,34 @@ def renomeia_apenas_tvmaze(dir_trabalho,
     # Criar Lista de nomes de Episódios
     for episodio in lista_de_episodios_tvmaze:
         if episodio["number"] != None and episodio["season"] == temporada_episodios:
-            lista_de_nomes_de_episodios.append(
-                "#" + str(episodio["number"]) + ' - ' + episodio["name"])
+            lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
 
     # Exibe prévia
     exibe_previa(lista_de_nomes_de_episodios, dir_arquivos, dir_arquivos)
 
     input('Aperte \'Enter\' para contirnuar:')
 
-    renomeia_arquivos_01(dir_trabalho=dir_trabalho,
-                         lista_de_nomes_de_episodios=lista_de_nomes_de_episodios, dir_arquivos=dir_arquivos)
+    renomeia_arquivos_01(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios, dir_arquivos=dir_arquivos)
 
 
 def baixa_tvmaze_legendas(codigo=None):
-    return requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes',
-                        verify=True).json()
+    return requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes', verify=True).json()
 
 
 def baixa_anidb_legendas(client=None, clientver=None, codigo=None):
-    raiz = ET.fromstring(
-        requests.get(
-            "http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid="
-            + codigo,
-            verify=True).content)
+    raiz = ET.fromstring(requests.get(
+        "http://api.anidb.net:9001/httpapi?request=anime&client=fagnerpc&clientver=2&protover=1&aid=" + codigo, verify=True).content)
     return raiz
 
 
 '''
-
     Funções Relacionadas a Sincroninações de Tempo
-
 '''
 
 
 def desloca_subs(subs, h=0, m=0, s=0, delta_deslocamento=0):
     tempo_inicial = (h * 3600000) + (m * 60000) + (s * 1000)
-    delta_deslocamento = 89999
+    delta_deslocamento = delta_deslocamento
 
     for line in subs:
         if line.start > tempo_inicial:
@@ -513,10 +426,9 @@ def desloca_subs(subs, h=0, m=0, s=0, delta_deslocamento=0):
             line.end += delta_deslocamento
 
 
-def resincroniza_legendas(dir_trabalho, extensao_legenda='.ass', h=0, m=0, s=0, delta_deslocamento=0):
-    arq_dir_trabalho = os.listdir(dir_trabalho)
-    for arquivo_de_legenda in arq_dir_trabalho:
+def resincroniza_legendas(dir_trabalho, arquivos_de_legenda, dir_backup='Legendas Originais', extensao_legenda='.ass', h=0, m=0, s=0, delta_deslocamento=0):
+    for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
-            subs = pysubs2.load(dir_trabalho + '/' + arquivo_de_legenda , encoding="utf-8")
-            desloca_subs(subs,h,m,s,delta_deslocamento)
+            subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
+            desloca_subs(subs, h, m, s, delta_deslocamento)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)

@@ -27,8 +27,12 @@
                 // "360",
                 // "-e",
                 // ".mkv",
-                "-si=32",
-                "-des=9900",
+                "-mi",
+                "1",
+                "-si",
+                "29",
+                "-des",
+                "9900",
                 "-d",
                 "/home/fagner/Vídeos/Banco De Testes Para Legendas/Resync Legendas/"
             ]

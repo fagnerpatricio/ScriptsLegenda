@@ -100,6 +100,7 @@ if __name__ == "__main__":
 
         LibAniHubSub.resincroniza_legendas(
             dir_trabalho=argumentos.dir_trabalho,
+            arquivos_de_legenda=os.listdir(argumentos.dir_trabalho + '/' + LibAniHubSub.CONFIG["dirLegendaAntiga"]),
             h=argumentos.hi,
             m=argumentos.mi,
             s=argumentos.si,
