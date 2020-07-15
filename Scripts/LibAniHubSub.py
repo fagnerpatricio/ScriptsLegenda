@@ -143,8 +143,7 @@ def dir_bak_leg(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legenda
 
 def cheque_fontes_instaladas(subs, arquivo):
     for style in subs.styles.values():
-        if ntpath.basename(
-                font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
+        if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
             arquivo.write("Fonte: --> " + style.fontname + '\n')
 
 
@@ -206,21 +205,21 @@ def tratamento_legendas_tvmaze(dir_trabalho=None, arquivos_de_legenda=None, dir_
         if arquivo_de_legenda.endswith(extensao_legenda):
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             resize_subs(subs, res_x_dest=res_x)
-            corrigi_estilos_tvmaze(subs, res_x=res_x)
+            corrigi_estilos_tvmaze(subs, res_x=res_x,res_y=res_y)
             cheque_fontes_instaladas(subs, lista_de_fontes)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
     lista_de_fontes.close()
 
 
-def tratamento_legendas_anidb(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass'):
+def tratamento_legendas_anidb(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass', res_x=640, res_y=360):
     lista_de_fontes = open('listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
-            resize_subs(subs)
-            corrigi_estilos_tvmaze(subs)
+            resize_subs(subs,res_x_dest=res_x)
+            corrigi_estilos_tvmaze(subs,res_x=res_x,res_y=res_y)
             cheque_fontes_instaladas(subs, lista_de_fontes)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 

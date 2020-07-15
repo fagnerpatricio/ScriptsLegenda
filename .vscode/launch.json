@@ -11,8 +11,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                // "-c",
-                // "12628",
+                "-c",
+                "6083",
                 // "-t",
                 // "1",
                 // "-m",
@@ -21,20 +21,20 @@
                 // "5196",
                 // "-t",
                 // "4",
-                // "-rx",
-                // "480",
-                // "-ry",
-                // "360",
+                "-rx",
+                "640",
+                "-ry",
+                "436",
                 // "-e",
                 // ".mkv",
-                "-mi",
-                "1",
-                "-si",
-                "29",
-                "-des",
-                "9900",
+                // "-mi",
+                // "1",
+                // "-si",
+                // "29",
+                // "-des",
+                // "9900",
                 "-d",
-                "/home/fagner/Vídeos/Banco De Testes Para Legendas/Resync Legendas/"
+                "/media/Multimedia/Animes/Kiss X Sis/OAD/"
             ]
         }
     ]

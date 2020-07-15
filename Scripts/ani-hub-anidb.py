@@ -27,6 +27,22 @@ if __name__ == "__main__":
         help='Indica o diretorio que os arquivos estão'
     )
 
+    parser.add_argument(
+        '-rx',
+        action='store',
+        dest='res_x',
+        required=False,
+        help='Indica a resolução em X'
+    )
+
+    parser.add_argument(
+        '-ry',
+        action='store',
+        dest='res_y',
+        required=False,
+        help='Indica a resolução em Y'
+    )
+
     try:
         argumentos = parser.parse_args()
 
@@ -39,7 +55,9 @@ if __name__ == "__main__":
 
         LibAniHubSub.tratamento_legendas_anidb(
             dir_trabalho=argumentos.dir_trabalho,
-            arquivos_de_legenda=os.listdir(argumentos.dir_trabalho + '/' + LibAniHubSub.CONFIG["dirLegendaAntiga"])
+            arquivos_de_legenda=os.listdir(argumentos.dir_trabalho + '/' + LibAniHubSub.CONFIG["dirLegendaAntiga"]),
+            res_x=argumentos.res_x,
+            res_y=argumentos.res_y
         )
 
         LibAniHubSub.renomeia_anidb(
