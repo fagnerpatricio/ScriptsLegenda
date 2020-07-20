@@ -13,6 +13,7 @@ from matplotlib import font_manager
 
 # Bloco de Configurações
 CONFIG = {"dirLegendaAntiga": "Legendas Originais"}
+RELAORIO_DE_FONTES = {}
 
 fontes_legendas_otaku = {
     'Arial': 'Roboto',
@@ -90,6 +91,12 @@ estilos = {'Default': Padrao, 'Overlap': Padrao, 'Default Italic': Italico}
 
 CONFIG_ESTILOS_LEGENDAS = json.loads(json.dumps(estilos))
 
+# ==================================================================================================
+'''
+    Funções Comuns a Todos
+'''
+# ==================================================================================================
+
 
 def trocar_caractere(texto):
     replacements = {"?": "^", ":": "_", "/": "~"}
@@ -105,19 +112,6 @@ def exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
             tablefmt="fancy_grid"
         )
     )
-
-
-def renomeia_arquivos(dir_trabalho, lista_de_nomes_de_episodios, dir_legendas, dir_episodios, extensao_legendas='.ass', extensao_video='.mkv'):
-    # Renomeando os arquivos
-    for nn_episodio, tn_leg, tn_ep in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
-        shutil.move(dir_trabalho + '/' + tn_leg, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao_legendas)
-        shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao_video)
-
-
-def renomeia_arquivos_01(dir_trabalho, lista_de_nomes_de_episodios, dir_arquivos, extensao='.mkv'):
-    # Renomeando os arquivos
-    for nn_episodio, tn_ep in zip(lista_de_nomes_de_episodios, dir_arquivos):
-        shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao)
 
 
 def dir_bak_leg(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass'):
@@ -141,10 +135,15 @@ def dir_bak_leg(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legenda
                 print("Arquivo já existe no destino" + arquivo_de_legenda)
 
 
-def cheque_fontes_instaladas(subs, arquivo):
+# def cheque_fontes_instaladas(subs, arquivo):
+#     for style in subs.styles.values():
+#         if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
+#             arquivo.write("Fonte: --> " + style.fontname + '\n')
+
+def cheque_fontes_instaladas(subs):
     for style in subs.styles.values():
         if ntpath.basename(font_manager.findfont(style.fontname.replace('-', " "))) == 'DejaVuSans.ttf':
-            arquivo.write("Fonte: --> " + style.fontname + '\n')
+            RELAORIO_DE_FONTES[style.fontname] = "Faltando"
 
 
 def resize_subs(subs, res_x_dest=640):
@@ -168,13 +167,8 @@ def resize_subs(subs, res_x_dest=640):
                               ) if x[0] == 'm' else ",".join([n(c) for c in re.split(r'[,\s]\s*', x[-1:][0])])
 
     for line in subs:
-        # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\|\,}](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
-        # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip)(\()((?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)(?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)?)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
-        # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})|[\\|\(|\}|\,](m)(\s.+?)[\{|\)|\n]',line.text)]
-        # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})|[\\|\(|\}|\,](m)(\s.+\d)[\(|\{]?',line.text)]
         busca_de_padroes = [
             tuple(i for i in m if i) for m in re.findall(
-                # r'(move|clip|pos|org|fs)(\()?(0?,?(?:\-?\d+\,?\.?\d+\,?){1,4})|(m)(\s[^\{\)\n]+)',
                 r'(move|clip|pos|org)(\()(-?(?:\d+(?:\.\d*)?|\.\d+)(?:,-?(?:\d+(?:\.\d*)?|\.\d+)){0,3})|}(m)(\s[^\{\)\n]+)|(fs)(\d+\.?\d+)',
                 line.text)
         ]
@@ -185,45 +179,66 @@ def resize_subs(subs, res_x_dest=640):
                 continue
 
 
+# ==================================================================================================
+def renomeia_arquivos(dir_trabalho, lista_de_nomes_de_episodios, dir_legendas, dir_episodios, extensao_legendas='.ass', extensao_video='.mkv'):
+    # Renomeando os arquivos
+    for nn_episodio, tn_leg, tn_ep in zip(lista_de_nomes_de_episodios, dir_legendas, dir_episodios):
+        shutil.move(dir_trabalho + '/' + tn_leg, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao_legendas)
+        shutil.move(dir_trabalho + '/' + tn_ep, dir_trabalho + '/' + trocar_caractere(nn_episodio.rstrip()) + extensao_video)
+
+
+def renomeia_arquivos_generico(dir_trabalho, lista_de_nomes_novos, lista_de_nomes_antigos, extensao='.mkv'):
+    # Renomeando os arquivos
+    for nn_arquivo, an_arquivo in zip(lista_de_nomes_novos, lista_de_nomes_antigos):
+        shutil.move(dir_trabalho + '/' + an_arquivo, dir_trabalho + '/' + trocar_caractere(nn_arquivo.rstrip()) + extensao)
+
+
 def tratamento_legendas_crunchroll(dir_trabalho=None, dir_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass'):
-    lista_de_fontes = open(dir_trabalho + '/' + 'listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in dir_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             corrigi_estilos_crunchroll(subs)
-            cheque_fontes_instaladas(subs, lista_de_fontes)
+            cheque_fontes_instaladas(subs)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
-    lista_de_fontes.close()
+
+def tratamento_legendas(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', res_x=640, res_y=360):
+
+    for arquivo_de_legenda in arquivos_de_legenda:
+        subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
+        resize_subs(subs, res_x_dest=res_x)
+        corrigi_estilos(subs, res_x=res_x, res_y=res_y)
+        cheque_fontes_instaladas(subs)
+        subs.save(dir_trabalho + '/' + arquivo_de_legenda)
+
+    with open('file.txt', 'w') as file:
+        file.write(json.dumps(RELAORIO_DE_FONTES))
 
 
 def tratamento_legendas_tvmaze(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass', res_x=640, res_y=360):
-    lista_de_fontes = open('listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             resize_subs(subs, res_x_dest=res_x)
-            corrigi_estilos_tvmaze(subs, res_x=res_x,res_y=res_y)
-            cheque_fontes_instaladas(subs, lista_de_fontes)
+            corrigi_estilos(subs, res_x=res_x, res_y=res_y)
+            cheque_fontes_instaladas(subs)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
-
-    lista_de_fontes.close()
 
 
 def tratamento_legendas_anidb(dir_trabalho=None, arquivos_de_legenda=None, dir_backup='Legendas Originais', extensao_legenda='.ass', res_x=640, res_y=360):
-    lista_de_fontes = open('listaDeFontes.txt', 'w+')
 
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
-            resize_subs(subs,res_x_dest=res_x)
-            corrigi_estilos_tvmaze(subs,res_x=res_x,res_y=res_y)
-            cheque_fontes_instaladas(subs, lista_de_fontes)
+            resize_subs(subs, res_x_dest=res_x)
+            corrigi_estilos(subs, res_x=res_x, res_y=res_y)
+            cheque_fontes_instaladas(subs)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
-    lista_de_fontes.close()
+
+# ==================================================================================================
 
 
 def corrigi_estilos_crunchroll(subs):
@@ -258,7 +273,7 @@ def corrigi_estilos_crunchroll(subs):
             subs.styles.pop(estilo)
 
 
-def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
+def corrigi_estilos(subs, res_x=640, res_y=360):
     subs.info = {
         "Title": "[Legendas-Otaku] Português (Brasil)",
         "PlayResX": res_x,
@@ -287,7 +302,7 @@ def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
         try:
             estilo.fontname = fontes_legendas_otaku_extendido[estilo.fontname]
         except:
-            continue
+            None
 
         # Verifica se um Stylo está sendo usado
         contador = 0
@@ -301,6 +316,8 @@ def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
     for estilo in lista_com_contadores_de_estilos:
         if lista_com_contadores_de_estilos[estilo] == 0:
             subs.styles.pop(estilo)
+
+# ==================================================================================================
 
 
 def renomeia_crunchroll(dir_trabalho):
@@ -397,11 +414,25 @@ def renomeia_apenas_tvmaze(dir_trabalho, lista_de_episodios_tvmaze, extensao='.m
 
     input('Aperte \'Enter\' para contirnuar:')
 
-    renomeia_arquivos_01(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios, dir_arquivos=dir_arquivos)
+    # renomeia_arquivos_generico(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios, dir_arquivos=dir_arquivos)
+
+
+# ==================================================================================================
+#
+#     Funções Relacionadas a TVMaze
+#
+# ==================================================================================================
 
 
 def baixa_tvmaze_legendas(codigo=None):
     return requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes', verify=True).json()
+
+
+# ==================================================================================================
+#
+#     Funções Relacionadas a AniDB
+#
+# ==================================================================================================
 
 
 def baixa_anidb_legendas(client=None, clientver=None, codigo=None):
@@ -410,9 +441,11 @@ def baixa_anidb_legendas(client=None, clientver=None, codigo=None):
     return raiz
 
 
+# ==================================================================================================
 '''
     Funções Relacionadas a Sincroninações de Tempo
 '''
+# ==================================================================================================
 
 
 def desloca_subs(subs, h=0, m=0, s=0, delta_deslocamento=0):
@@ -431,3 +464,55 @@ def resincroniza_legendas(dir_trabalho, arquivos_de_legenda, dir_backup='Legenda
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
             desloca_subs(subs, h, m, s, delta_deslocamento)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
+
+# busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\|\,}](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+# busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip)(\()((?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)(?:\-?\,?\d+\.?\d+\W+?\d+\.?\d+)?)|[\\|\(|\}|\,](m)(\s.+?)[\)|\{]|(pos|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
+# busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})|[\\|\(|\}|\,](m)(\s.+?)[\{|\)|\n]',line.text)]
+# busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'(move|clip|pos|org|fs)(\()?((?:\,?\-?\d+\.?\d+){1,4})|[\\|\(|\}|\,](m)(\s.+\d)[\(|\{]?',line.text)]
+
+# r'(move|clip|pos|org|fs)(\()?(0?,?(?:\-?\d+\,?\.?\d+\,?){1,4})|(m)(\s[^\{\)\n]+)',
+
+
+# def corrigi_estilos_tvmaze(subs, res_x=640, res_y=360):
+#     subs.info = {
+#         "Title": "[Legendas-Otaku] Português (Brasil)",
+#         "PlayResX": res_x,
+#         "PlayResY": res_y,
+#         "ScriptType": "v4.00+",
+#         "WrapStyle": "0"
+#     }
+
+#     subs.aegisub_project = {}
+
+#     lista_com_contadores_de_estilos = {}
+
+#     def altera_elementos(x, y): return x if x else y
+#     def altera_cor(x, y): return pysubs2.Color(*x) if True else y
+
+#     for nome_estilo, estilo in zip(subs.styles.keys(), subs.styles.values()):
+#         for atributo in frozenset(estilo.FIELDS):
+#             try:
+#                 if any(x == atributo for x in ["backcolor", "outlinecolor", "secondarycolor", "primarycolor"]):
+#                     vars(estilo)[atributo] = altera_cor(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo], vars(estilo)[atributo])
+#                 else:
+#                     vars(estilo)[atributo] = altera_elementos(CONFIG_ESTILOS_LEGENDAS[nome_estilo][atributo], vars(estilo)[atributo])
+#             except:
+#                 continue
+
+#         try:
+#             estilo.fontname = fontes_legendas_otaku_extendido[estilo.fontname]
+#         except:
+#             continue
+
+#         # Verifica se um Stylo está sendo usado
+#         contador = 0
+#         for line in subs:
+#             if nome_estilo == line.style:
+#                 contador += 1
+
+#         lista_com_contadores_de_estilos[nome_estilo] = contador
+
+#     # Remove o estilo caso ele não esteja sendo usado
+#     for estilo in lista_com_contadores_de_estilos:
+#         if lista_com_contadores_de_estilos[estilo] == 0:
+#             subs.styles.pop(estilo)

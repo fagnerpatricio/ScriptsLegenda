@@ -36,4 +36,6 @@
             }
         ]
     },
+    "completeline.padString": "//",
+    "completeline.padLengths": [],
 }

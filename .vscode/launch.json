@@ -11,20 +11,20 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "-c",
-                "6083",
-                // "-t",
-                // "1",
+                // "-c",
+                // "6083",
+                "-t",
+                "2",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
                 // "5196",
                 // "-t",
                 // "4",
-                "-rx",
-                "640",
-                "-ry",
-                "436",
+                // "-rx",
+                // "640",
+                // "-ry",
+                // "360",
                 // "-e",
                 // ".mkv",
                 // "-mi",
@@ -33,8 +33,10 @@
                 // "29",
                 // "-des",
                 // "9900",
+                "-ext",
+                ".mp4",
                 "-d",
-                "/media/Multimedia/Animes/Kiss X Sis/OAD/"
+                "/media/Multimedia/Animes/Não Vistos/L/"
             ]
         }
     ]
