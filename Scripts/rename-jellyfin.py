@@ -43,6 +43,7 @@ if __name__ == "__main__":
         action='store',
         dest='res_x',
         required=False,
+        default=640,
         help='Indica a resolução em X'
     )
 
@@ -51,7 +52,16 @@ if __name__ == "__main__":
         action='store',
         dest='res_y',
         required=False,
+        default=360,
         help='Indica a resolução em Y'
+    )
+
+    parser.add_argument(
+        '-ts',
+        action='store',
+        dest='titulo',
+        required=False,
+        help='Indica o título que será usado no arquivos: titulo.S01E01.mkv'
     )
 
     parser.add_argument(
@@ -64,10 +74,11 @@ if __name__ == "__main__":
 
     argumentos = parser.parse_args()
 
-    nomes_atuais_episodios = [x for x in os.listdir(argumentos.dir_trabalho) if (x.endswith(EXT_MP4) or x.endswith(EXT_MKV))]
+    nomes_atuais_episodios = [x for x in os.listdir(argumentos.dir_trabalho) if x.endswith(argumentos.extensao)]
     nomes_atuais_episodios = natsort.natsorted(nomes_atuais_episodios, reverse=False)
-    nomes_novos_episodios = ["Episode_S" + argumentos.temporada.zfill(2) + "_E" + str(c).zfill(2) for c, a in enumerate(nomes_atuais_episodios, 1)]
+    nomes_novos_episodios = [argumentos.titulo + ".S" + argumentos.temporada.zfill(2) + "E" + str(c).zfill(2) for c, a in enumerate(nomes_atuais_episodios, 1)]
 
+    LibAniHubSub.renomeia_arquivos_generico(
         dir_trabalho=argumentos.dir_trabalho,
         lista_de_nomes_antigos=nomes_atuais_episodios,
         lista_de_nomes_novos=nomes_novos_episodios,

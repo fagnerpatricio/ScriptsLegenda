@@ -11,10 +11,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                // "-c",
-                // "6083",
+                "-c",
+                "5731",
                 "-t",
-                "2",
+                "1",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
@@ -32,11 +32,17 @@
                 // "-si",
                 // "29",
                 // "-des",
-                // "9900",
-                "-ext",
-                ".mp4",
+                // "-1000",
+                // "-ext",
+                // ".mp4",
+                // "-ci",
+                // "2",
+                // "-cf",
+                // "3",
+                // "-ext",
+                // ".mkv",
                 "-d",
-                "/media/Multimedia/Animes/Não Vistos/L/"
+                "/home/fagner/Vídeos/Tratamento/"
             ]
         }
     ]
