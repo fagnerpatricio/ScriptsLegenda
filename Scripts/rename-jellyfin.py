@@ -6,19 +6,26 @@ import os
 import natsort
 import re
 import shutil
+import requests
 
 # Importações Personalizadas
 import LibAniHubSub
 
-# dir_trabalho = '/media/Multimedia/Animes/Okami-san and Her Seven Companions/'
 EXT_LEG = ".ass"
 EXT_MKV = ".mkv"
 EXT_MP4 = ".mp4"
-TEMPORADA = "01"
-FORMATO_NOME_EP = "Episode_S" + TEMPORADA + "_E"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Um programa de exemplo.', argument_default=argparse.SUPPRESS)
+
+    parser.add_argument(
+        '-c',
+        action='store',
+        dest='cod_tvmaze',
+        required=True,
+        default=None,
+        help='Indica o código do animes para buscar as informações no site da TVMaze'
+    )
 
     parser.add_argument(
         '-t',
@@ -74,9 +81,28 @@ if __name__ == "__main__":
 
     argumentos = parser.parse_args()
 
+    show = requests.get('http://api.tvmaze.com/shows/' + argumentos.cod_tvmaze + '?embed[]=episodes&embed[]=seasons', verify=True).json()
+
     nomes_atuais_episodios = [x for x in os.listdir(argumentos.dir_trabalho) if x.endswith(argumentos.extensao)]
     nomes_atuais_episodios = natsort.natsorted(nomes_atuais_episodios, reverse=False)
-    nomes_novos_episodios = [argumentos.titulo + ".S" + argumentos.temporada.zfill(2) + "E" + str(c).zfill(2) for c, a in enumerate(nomes_atuais_episodios, 1)]
+
+    f = lambda x: x if x != "" else show['name']
+    nomes_novos_episodios = [f(show['_embedded']['seasons'][int(argumentos.temporada) - 1]['name']) + " (" + show['_embedded']['seasons'][int(
+        argumentos.temporada) - 1]['premiereDate'].split("-")[0] + ") S" + argumentos.temporada.zfill(2) + "E" + str(c).zfill(2) for c, a in enumerate(nomes_atuais_episodios, 1)]
+
+    if argumentos.extensao == EXT_LEG:
+
+        LibAniHubSub.dir_bak_leg(
+            dir_trabalho=argumentos.dir_trabalho,
+            arquivos_de_legenda=os.listdir(argumentos.dir_trabalho)
+        )
+
+        LibAniHubSub.tratamento_legendas(
+            dir_trabalho=argumentos.dir_trabalho,
+            arquivos_de_legenda=os.listdir(argumentos.dir_trabalho + '/' + LibAniHubSub.CONFIG["dirLegendaAntiga"]),
+            res_x=argumentos.res_x,
+            res_y=argumentos.res_y
+        )
 
     LibAniHubSub.renomeia_arquivos_generico(
         dir_trabalho=argumentos.dir_trabalho,
@@ -85,31 +111,26 @@ if __name__ == "__main__":
         extensao=argumentos.extensao
     )
 
-    # LibAniHubSub.dir_bak_leg(
-    #     dir_trabalho=argumentos.dir_trabalho,
-    #     arquivos_de_legenda=os.listdir(argumentos.dir_trabalho)
-    # )
+    dirNameShow = show['name'] + " (" + show['premiered'].split("-")[0] + ")"
 
-    # LibAniHubSub.tratamento_legendas(
-    #     dir_trabalho=argumentos.dir_trabalho,
-    #     arquivos_de_legenda=os.listdir(argumentos.dir_trabalho + '/' + LibAniHubSub.CONFIG["dirLegendaAntiga"]),
-    #     res_x=argumentos.res_x,
-    #     res_y=argumentos.res_y
-    # )
+    try:
+        # Create target Directory
+        os.mkdir(argumentos.dir_trabalho + '/' + dirNameShow)
+        print("Directory ", argumentos.dir_trabalho + '/' + dirNameShow,  " Created ")
+    except FileExistsError:
+        print("Directory ", argumentos.dir_trabalho + '/' + dirNameShow,  " already exists")
 
-    # # LerAquivos
-    # arq_episodios = [x for x in os.listdir(argumentos.dir_trabalho) if (x.endswith(EXT_MP4) or x.endswith(EXT_MKV))]
-    # arq_legendas = [x for x in os.listdir(argumentos.dir_trabalho) if x.endswith(EXT_LEG)]
+    dirNameTemporada = "Season " + argumentos.temporada
 
-    # arq_episodios = natsort.natsorted(arq_episodios, reverse=False)
-    # arq_legendas = natsort.natsorted(arq_legendas, reverse=False)
+    try:
+        # Create target Directory
+        os.mkdir(argumentos.dir_trabalho + '/' + dirNameShow + '/' + dirNameTemporada)
+        print("Directory ", argumentos.dir_trabalho + '/' + dirNameShow + '/' + dirNameTemporada,  " Created ")
+    except FileExistsError:
+        print("Directory ", argumentos.dir_trabalho + '/' + dirNameShow + '/' + dirNameTemporada,  " already exists")
 
-    # for c, a in enumerate(arq_episodios, 1):
-    #     shutil.move(argumentos.dir_trabalho + a, argumentos.dir_trabalho + "Episode_S" +
-    #                 argumentos.temporada.zfill(2) + "_E" + str(c).zfill(2) + EXT_MKV)
-
-    # for c, a in enumerate(arq_legendas, 1):
-    #     shutil.move(argumentos.dir_trabalho + a, argumentos.dir_trabalho + "Episode_S" +
-    #                 argumentos.temporada.zfill(2) + "_E" + str(c).zfill(2) + ".ptBR" + EXT_LEG)
+    for arquivo in nomes_novos_episodios:
+        shutil.move(argumentos.dir_trabalho + '/' + arquivo + argumentos.extensao,
+                    argumentos.dir_trabalho + '/' + dirNameShow + '/' + dirNameTemporada + '/' + arquivo + argumentos.extensao)
 
     print("SUCESSO")

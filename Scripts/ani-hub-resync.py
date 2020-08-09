@@ -46,7 +46,7 @@ if __name__ == "__main__":
         dest='hf',
         required=False,
         type=int,
-        default=0,
+        default=24,
         help='Indica o tempo inicial para começar a sincronização'
     )
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
         dest='mf',
         required=False,
         type=int,
-        default=0,
+        default=60,
         help='Indica o tempo inicial para começar a sincronização'
     )
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         dest='sf',
         required=False,
         type=int,
-        default=0,
+        default=60,
         help='Indica o tempo inicial para começar a sincronização'
     )
 
@@ -104,6 +104,9 @@ if __name__ == "__main__":
             h=argumentos.hi,
             m=argumentos.mi,
             s=argumentos.si,
+            hf=argumentos.hf,
+            mf=argumentos.mf,
+            sf=argumentos.sf,
             delta_deslocamento=argumentos.deslocamento
         )
 

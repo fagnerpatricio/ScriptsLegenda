@@ -11,10 +11,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "-c",
-                "5731",
-                "-t",
-                "1",
+                // "-c",
+                // "5731",
+                // "-t",
+                // "2",
                 // "-m",
                 // "tvmaze",
                 // "-tvmaze",
@@ -31,8 +31,8 @@
                 // "1",
                 // "-si",
                 // "29",
-                // "-des",
-                // "-1000",
+                "-des",
+                "-1000",
                 // "-ext",
                 // ".mp4",
                 // "-ci",
@@ -40,9 +40,9 @@
                 // "-cf",
                 // "3",
                 // "-ext",
-                // ".mkv",
+                // ".ass",
                 "-d",
-                "/home/fagner/Vídeos/Tratamento/"
+                "/home/fagner/Vídeos/Tratamento"
             ]
         }
     ]

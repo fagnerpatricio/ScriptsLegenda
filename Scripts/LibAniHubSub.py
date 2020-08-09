@@ -19,7 +19,7 @@ fontes_legendas_otaku = {
     'Arial': 'Roboto',
     'Comic Sans MS': 'Comic Neue',
     'Times New Roman': 'Roboto Slab',
-    'Trebuchet MS': 'Merriweather Sans',
+    'Trebuchet MS': 'Trebuchet MS',
     'Verdana': 'Arimo'
 }
 
@@ -28,16 +28,16 @@ fontes_legendas_otaku_extendido = {
     'Comic Sans MS': 'Comic Neue',
     'Times New Roman': 'Roboto Slab',
     'TimesNewRoman': 'Roboto Slab',
-    'Trebuchet MS': 'Allerta',
     'Verdana': 'Arimo',
     'Ad Hoc': 'Metal Mania',
     'Franklin Gothic Book': 'Libre Franklin',
-    'Utopia Std Display': 'Playfair Display'
+    'Utopia Std Display': 'Playfair Display',
+    'Lucida Casual' : ''
 }
 
 Padrao = {
-    "fontname": "Merriweather Sans",
-    "fontsize": 22,
+    "fontname": "Trebuchet MS",
+    "fontsize": 21,
     "backcolor": [0, 0, 0, 0],
     "outlinecolor": [25, 25, 25, 0],
     "secondarycolor": [0, 0, 255, 0],
@@ -61,8 +61,8 @@ Padrao = {
 }
 
 Italico = {
-    "fontname": "Merriweather Sans",
-    "fontsize": 22,
+    "fontname": "Trebuchet MS",
+    "fontsize": 21,
     "backcolor": [0, 0, 0, 0],
     "outlinecolor": [25, 25, 25, 0],
     "secondarycolor": [0, 0, 255, 0],
@@ -85,9 +85,9 @@ Italico = {
     "encoding": 0
 }
 
-SoFonte = {"fontname": "Merriweather Sans"}
+SoFonte = {"fontname": "Trebuchet MS"}
 
-estilos = {'Default': Padrao, 'Overlap': Padrao, 'Default Italic': Italico}
+estilos = {'Tradu': Padrao, 'Narradora': Padrao, 'Default Italic': Italico}
 
 CONFIG_ESTILOS_LEGENDAS = json.loads(json.dumps(estilos))
 
@@ -99,7 +99,7 @@ CONFIG_ESTILOS_LEGENDAS = json.loads(json.dumps(estilos))
 
 
 def trocar_caractere(texto):
-    replacements = {"?": "^", ":": "_", "/": "~"}
+    replacements = {"?": "^", "/": "~"}
 
     return "".join([replacements.get(c, c) for c in texto])
 
@@ -366,6 +366,29 @@ def renomeia_tvmaze(dir_trabalho, lista_de_episodios_tvmaze, temporada_episodios
     renomeia_arquivos(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
                       dir_legendas=dir_legendas, dir_episodios=dir_episodios)
 
+def renomeia_tvmaze_kodi(dir_trabalho, info_serie ,lista_de_episodios_tvmaze, temporada_episodios=1):
+    # LerAquivos
+    dir_episodios = [x for x in os.listdir(dir_trabalho) if x.endswith(".mkv")]
+    dir_legendas = [x for x in os.listdir(dir_trabalho) if x.endswith(".ass")]
+
+    # Ordena Nomes
+    dir_episodios = natsort.natsorted(dir_episodios, reverse=False)
+    dir_legendas = natsort.natsorted(dir_legendas, reverse=False)
+
+    lista_de_nomes_de_episodios = []
+
+    # Criar Lista de nomes de Episódios
+    for episodio in lista_de_episodios_tvmaze:
+        if episodio["number"] != None and episodio["season"] == temporada_episodios:
+            lista_de_nomes_de_episodios.append("#" + str(episodio["number"]) + ' - ' + episodio["name"])
+    # Exibe prévia
+    exibe_previa(lista_de_nomes_de_episodios, dir_legendas, dir_episodios)
+
+    input('Aperte \'Enter\' para contirnuar:')
+
+    renomeia_arquivos(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios,
+                      dir_legendas=dir_legendas, dir_episodios=dir_episodios)
+
 
 def renomeia_anidb(dir_trabalho, lista_de_episodios_anidb):
     # LerAquivos
@@ -417,6 +440,7 @@ def renomeia_apenas_tvmaze(dir_trabalho, lista_de_episodios_tvmaze, extensao='.m
     # renomeia_arquivos_generico(dir_trabalho=dir_trabalho, lista_de_nomes_de_episodios=lista_de_nomes_de_episodios, dir_arquivos=dir_arquivos)
 
 
+
 # ==================================================================================================
 #
 #     Funções Relacionadas a TVMaze
@@ -426,6 +450,12 @@ def renomeia_apenas_tvmaze(dir_trabalho, lista_de_episodios_tvmaze, extensao='.m
 
 def baixa_tvmaze_legendas(codigo=None):
     return requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes', verify=True).json()
+
+def baixa_tvmaze_infos(codigo=None):
+    show = requests.get('http://api.tvmaze.com/shows/' + codigo, verify=True).json()
+    episodios = requests.get('http://api.tvmaze.com/shows/' + codigo + '/episodes', verify=True).json()
+
+    return show, episodios
 
 
 # ==================================================================================================
@@ -448,21 +478,22 @@ def baixa_anidb_legendas(client=None, clientver=None, codigo=None):
 # ==================================================================================================
 
 
-def desloca_subs(subs, h=0, m=0, s=0, delta_deslocamento=0):
+def desloca_subs(subs, h=0, m=0, s=0, hf=0, mf=0, sf=0, delta_deslocamento=0):
     tempo_inicial = (h * 3600000) + (m * 60000) + (s * 1000)
+    tempo_final = (hf * 3600000) + (mf * 60000) + (sf * 1000)
     delta_deslocamento = delta_deslocamento
 
     for line in subs:
-        if line.start > tempo_inicial:
+        if (line.start >= tempo_inicial and line.end <= tempo_final):
             line.start += delta_deslocamento
             line.end += delta_deslocamento
 
 
-def resincroniza_legendas(dir_trabalho, arquivos_de_legenda, dir_backup='Legendas Originais', extensao_legenda='.ass', h=0, m=0, s=0, delta_deslocamento=0):
+def resincroniza_legendas(dir_trabalho, arquivos_de_legenda, dir_backup='Legendas Originais', extensao_legenda='.ass', h=0, m=0, s=0, hf=0, mf=0, sf=0, delta_deslocamento=0):
     for arquivo_de_legenda in arquivos_de_legenda:
         if arquivo_de_legenda.endswith(extensao_legenda):
             subs = pysubs2.load(dir_trabalho + '/' + dir_backup + '/' + arquivo_de_legenda, encoding="utf-8")
-            desloca_subs(subs, h, m, s, delta_deslocamento)
+            desloca_subs(subs, h, m, s, hf, mf, sf, delta_deslocamento)
             subs.save(dir_trabalho + '/' + arquivo_de_legenda)
 
 # busca_de_padroes = [tuple(i for i in m if i) for m in re.findall(r'[\\|\(|\|\,}](m)(\s.+?)[\)|\{]|(pos|move|org)(\()(.+?)\)|(fs)(\d+\.?\d+)',line.text)]
